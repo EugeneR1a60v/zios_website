@@ -9,6 +9,9 @@
 //    (650+, 99.9%, 15,000+, 500K+; 24/7 is left as is).
 //  - Intro (when scrolled into view): eyebrow, title words and text stagger in,
 //    the photo uncovers from the bottom while it settles from a slight zoom.
+//  - Timeline (Figma 10091:14431): the bright centre line fills down the track
+//    with scroll (scrubbed); each milestone's year box opens from the centre
+//    line outwards, the year rises inside it, then the text fades up.
 // Elements are marked with data-ab-* attributes in Webflow. They start hidden
 // via the page head CSS (only while <html> has .ab-js); this script reveals
 // them, and if it can't run (no GSAP, reduced motion) it simply shows them.
@@ -149,14 +152,50 @@
       .from(text, { y: 30, autoAlpha: 0, duration: 1 }, 0.55);
   }
 
+  function initTimeline(sec) {
+    var list = sec.querySelector('.abouttl_list');
+    var progress = sec.querySelector('[data-ab-tl-progress]');
+    var items = sec.querySelectorAll('[data-ab-tl-item]');
+    var mobile = window.matchMedia('(max-width: 767px)');
+
+    // The bright line fills down the track as the list scrolls past the middle of the screen.
+    if (progress && list) {
+      gsap.fromTo(progress, { scaleY: 0 }, {
+        scaleY: 1,
+        ease: 'none',
+        scrollTrigger: { trigger: list, start: 'top 60%', end: 'bottom 60%', scrub: 0.6 }
+      });
+    }
+
+    items.forEach(function (item) {
+      var box = item.querySelector('.abouttl_box');
+      var year = item.querySelector('.abouttl_year');
+      var text = item.querySelector('.abouttl_text');
+      // Boxes open from the centre line outwards (on mobile the line is on the left, so all open to the right).
+      var fromLeft = mobile.matches || item.classList.contains('is-right');
+      var closed = fromLeft ? 'inset(0% 100% 0% 0%)' : 'inset(0% 0% 0% 100%)';
+
+      gsap.set(item, { autoAlpha: 1 });
+      var tl = gsap.timeline({
+        defaults: { ease: 'power4.out' },
+        scrollTrigger: { trigger: item, start: 'top 80%', once: true }
+      });
+      if (box) tl.fromTo(box, { clipPath: closed }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.2, ease: 'power3.inOut' }, 0);
+      if (year) tl.from(year, { yPercent: 110, duration: 1 }, 0.45);
+      if (text) tl.from(text, { y: 24, autoAlpha: 0, duration: 0.9 }, 0.6);
+    });
+  }
+
   function init() {
     var hero = document.querySelector('.abouthero_sec');
     var intro = document.querySelector('.aboutintro_sec');
-    if (!hero && !intro) return showAll();
+    var timeline = document.querySelector('.abouttl_sec');
+    if (!hero && !intro && !timeline) return showAll();
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return showAll();
     gsap.registerPlugin(ScrollTrigger);
     if (hero) initHero(hero);
     if (intro) initIntro(intro);
+    if (timeline) initTimeline(timeline);
     root.classList.remove('ab-js');
     ScrollTrigger.refresh();
   }

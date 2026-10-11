@@ -6,16 +6,27 @@ setTimeout(function () { if (!window.__abReveal) document.documentElement.classL
 </script>
 <style>
 /* Figma measures every gap from the trimmed text box (cap height to baseline); trim the same way where supported. */
-.abouthero_sec :is(h1, h2, p), .aboutintro_sec :is(h2, p) { text-box: trim-both cap alphabetic; }
+.abouthero_sec :is(h1, h2, p), .aboutintro_sec :is(h2, p), .abouttl_sec :is(h3, p) { text-box: trim-both cap alphabetic; }
+
+/* Timeline (Figma 10091:14431): dark blue to bright blue, year boxes in blue-100 at 25% with a fine white dot grid,
+   progress line glows. Figma's end colour #0465cf has no swatch; mixed from blue-100 and blue-130 (closest, flagged). */
+.abouttl_sec { background-image: linear-gradient(180deg, var(--swatch--blue-170) 0%, color-mix(in srgb, var(--swatch--blue-100) 45%, var(--swatch--blue-130)) 100%); }
+.abouttl_box {
+  background-color: color-mix(in srgb, var(--swatch--blue-100) 25%, transparent);
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--swatch--white-100) 30%, transparent) 0.75px, transparent 1px);
+  background-size: 7.5px 7.5px;
+  background-position: 0 0;
+}
+.abouttl_progress { box-shadow: 0 0 6px 1px color-mix(in srgb, var(--swatch--blue-60) 70%, transparent); transform-origin: 50% 0; }
 
 /* Reveal starting state (only while JS is pending). */
-.ab-js :is([data-ab-reveal], [data-ab-split], [data-ab-stat], [data-ab-line], [data-ab-visual]) { visibility: hidden; }
+.ab-js :is([data-ab-reveal], [data-ab-split], [data-ab-stat], [data-ab-line], [data-ab-visual], [data-ab-tl-item]) { visibility: hidden; }
 
 /* Word masks for the split headings. */
 .ab-w { display: inline-block; overflow: hidden; vertical-align: top; padding: 0 0.06em 0.14em; margin: 0 -0.06em -0.14em; }
 .ab-wi { display: inline-block; will-change: transform; }
 
 @media (prefers-reduced-motion: reduce) {
-  .ab-js :is([data-ab-reveal], [data-ab-split], [data-ab-stat], [data-ab-line], [data-ab-visual]) { visibility: visible; }
+  .ab-js :is([data-ab-reveal], [data-ab-split], [data-ab-stat], [data-ab-line], [data-ab-visual], [data-ab-tl-item]) { visibility: visible; }
 }
 </style>
