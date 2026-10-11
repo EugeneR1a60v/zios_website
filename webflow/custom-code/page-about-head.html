@@ -90,16 +90,24 @@ setTimeout(function () { if (!window.__abReveal) document.documentElement.classL
 
     var canvas = document.createElement('canvas');
     canvas.setAttribute('aria-hidden', 'true');
-    canvas.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;';
+    // Size and place the canvas with !important so global canvas rules (site
+    // bundle) can't stretch or shrink it; its CSS size is always the box size.
+    ['position:absolute', 'left:0', 'top:0', 'right:auto', 'bottom:auto', 'margin:0',
+      'max-width:none', 'max-height:none', 'pointer-events:none', 'display:block']
+      .forEach(function (d) { var p = d.split(':'); canvas.style.setProperty(p[0], p[1], 'important'); });
     host.appendChild(canvas);
     var ctx = canvas.getContext('2d');
     var color = getComputedStyle(document.documentElement).getPropertyValue('--swatch--white-100').trim() || '#fcfcfc';
-    var s = 1, dpr = 1;
+    var s = 1, dpr = 1, cw = 0, ch = 0;
 
     function resize() {
       var w = host.clientWidth, h = host.clientHeight;
       if (!w || !h) return;
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var d = Math.min(window.devicePixelRatio || 1, 2);
+      if (w === cw && h === ch && d === dpr) return;
+      cw = w; ch = h; dpr = d;
+      canvas.style.setProperty('width', w + 'px', 'important');
+      canvas.style.setProperty('height', h + 'px', 'important');
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
       s = w / art.w;
@@ -131,6 +139,7 @@ setTimeout(function () { if (!window.__abReveal) document.documentElement.classL
       if (!visible) return;
       if (now - last >= TICK_MS) {
         last = now;
+        resize();
         for (var i = 0; i < cells.length; i++) {
           var cell = cells[i], r = Math.random();
           if (r < SWAP) cell.l = Math.max(1, Math.min(7, cell.base + (Math.random() < 0.5 ? -1 : 1)));
@@ -142,9 +151,14 @@ setTimeout(function () { if (!window.__abReveal) document.documentElement.classL
       requestAnimationFrame(frame);
     }
 
+    // Re-measure whenever the box may have changed size: on resize, after web
+    // fonts and the page finish loading, and on every animation tick (cheap:
+    // nothing happens unless the size really changed).
     resize();
     if (window.ResizeObserver) new ResizeObserver(resize).observe(host);
-    else window.addEventListener('resize', resize);
+    window.addEventListener('resize', resize);
+    window.addEventListener('load', resize);
+    if (document.fonts) document.fonts.ready.then(resize);
     if (still || !window.IntersectionObserver) return;
     new IntersectionObserver(function (entries) {
       var was = visible;
