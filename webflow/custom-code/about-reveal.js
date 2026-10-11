@@ -3,8 +3,8 @@
 //  - Hero (on load): background settles from a slight zoom, eyebrow fades up,
 //    the heading rises word by word out of a mask (stagger).
 //  - Hero stats (when scrolled into view): stats fade up with a stagger, the
-//    divider draws from left to right, numbers count up to their value
-//    (650+, 99.9%, 15,000+, 500K+; 24/7 is left as is).
+//    divider draws from left to right, the numbers roll into place digit by
+//    digit like the Home "Über Zios" numbers (650+, 99.9%, 24/7, 15,000+, 500K+).
 //  - Intro (when scrolled into view): eyebrow, title words and text stagger in,
 //    the photo uncovers from the bottom while it settles from a slight zoom.
 //  - Timeline (Figma 10091:14431): the bright centre line fills down the track
@@ -76,40 +76,41 @@
     return el.querySelectorAll('.ab-wi');
   }
 
-  // "15,000+" -> { value: 15000, decimals: 0, comma: true, prefix: '', suffix: '+' }
-  function parseCount(text) {
-    var m = text.trim().match(/^([^\d]*)([\d][\d,]*(?:\.\d+)?)(.*)$/);
-    if (!m) return null;
-    var num = m[2];
-    var dot = num.indexOf('.');
-    return {
-      prefix: m[1],
-      value: parseFloat(num.replace(/,/g, '')),
-      decimals: dot === -1 ? 0 : num.length - dot - 1,
-      comma: num.indexOf(',') !== -1,
-      suffix: m[3]
-    };
+  // Same rolling counter as the Home "Über Zios" numbers (home-about-countup.js):
+  // every digit is a 0-9 strip that slides up to its target like a mechanical
+  // counter; later digits spin more and settle a little later. Dots, commas,
+  // "%", "K", "+" and "/" stay put. Screen readers get the plain value.
+  var ROLL_MS = 1800, ROLL_STAGGER = 150;
+  function buildRoll(el) {
+    var txt = el.textContent.trim();
+    if (!/\d/.test(txt)) return null;
+    var cs = getComputedStyle(el), lh = parseFloat(cs.lineHeight);
+    if (isNaN(lh)) lh = parseFloat(cs.fontSize) * 1.2;
+    el.setAttribute('aria-label', txt);
+    el.textContent = '';
+    el.style.fontVariantNumeric = 'tabular-nums';
+    var k = 0, strips = [];
+    txt.split('').forEach(function (ch) {
+      var span = document.createElement('span');
+      span.setAttribute('aria-hidden', 'true');
+      if (!/\d/.test(ch)) { span.textContent = ch; el.appendChild(span); return; }
+      span.style.cssText = 'display:inline-block;overflow:hidden;vertical-align:top;height:' + lh + 'px;line-height:' + lh + 'px';
+      var strip = document.createElement('span');
+      strip.style.cssText = 'display:block;will-change:transform';
+      var n = ++k * 10 + +ch, html = ''; // later digits spin more
+      for (var i = 0; i <= n; i++) html += '<span style="display:block">' + (i % 10) + '</span>';
+      strip.innerHTML = html;
+      span.appendChild(strip);
+      el.appendChild(span);
+      strips.push({ strip: strip, y: -n * lh });
+    });
+    return strips;
   }
 
-  function formatCount(c, v) {
-    var s = c.comma
-      ? v.toLocaleString('en-US', { minimumFractionDigits: c.decimals, maximumFractionDigits: c.decimals })
-      : v.toFixed(c.decimals);
-    return c.prefix + s + c.suffix;
-  }
-
-  function countUp(el, delay) {
-    var c = parseCount(el.textContent);
-    if (!c) return;
-    var o = { v: 0 };
-    el.textContent = formatCount(c, 0);
-    gsap.to(o, {
-      v: c.value,
-      duration: 1.8,
-      delay: delay,
-      ease: 'power3.out',
-      onUpdate: function () { el.textContent = formatCount(c, o.v); },
-      onComplete: function () { el.textContent = formatCount(c, c.value); }
+  function roll(strips, delay) {
+    strips.forEach(function (s, i) {
+      s.strip.style.transition = 'transform ' + (ROLL_MS + i * ROLL_STAGGER) + 'ms cubic-bezier(.16,1,.3,1) ' + Math.round(delay * 1000) + 'ms';
+      s.strip.style.transform = 'translateY(' + s.y + 'px)';
     });
   }
 
@@ -120,7 +121,7 @@
     var words = heading ? splitWords(heading) : [];
     var stats = sec.querySelectorAll('[data-ab-stat]');
     var line = sec.querySelector('[data-ab-line]');
-    var counts = sec.querySelectorAll('[data-ab-count]');
+    var rolls = Array.prototype.map.call(sec.querySelectorAll('[data-ab-count]'), buildRoll).filter(Boolean);
 
     gsap.set([eyebrow, heading, stats, line], { autoAlpha: 1 });
 
@@ -136,7 +137,7 @@
     statsTl.from(stats, { y: 40, autoAlpha: 0, duration: 1, stagger: 0.12 }, 0);
     if (line) statsTl.from(line, { scaleX: 0, transformOrigin: '0% 50%', duration: 1.4, ease: 'power3.inOut' }, 0.2);
     statsTl.add(function () {
-      counts.forEach(function (el, i) { countUp(el, i * 0.12); });
+      rolls.forEach(function (strips, i) { roll(strips, i * 0.12); });
     }, 0);
   }
 
