@@ -1,0 +1,21 @@
+<!-- ABOUT US REDESIGN (versioned in strawberryjohn/zios_website: webflow/custom-code/) -->
+<script>
+/* Hide reveal targets until about-reveal.js (page footer) takes over; show them anyway after 4s if it never runs. */
+document.documentElement.classList.add('ab-js');
+setTimeout(function () { if (!window.__abReveal) document.documentElement.classList.remove('ab-js'); }, 4000);
+</script>
+<style>
+/* Figma measures every gap from the trimmed text box (cap height to baseline); trim the same way where supported. */
+.abouthero_sec :is(h1, h2, p), .aboutintro_sec :is(h2, p) { text-box: trim-both cap alphabetic; }
+
+/* Reveal starting state (only while JS is pending). */
+.ab-js :is([data-ab-reveal], [data-ab-split], [data-ab-stat], [data-ab-line], [data-ab-visual]) { visibility: hidden; }
+
+/* Word masks for the split headings. */
+.ab-w { display: inline-block; overflow: hidden; vertical-align: top; padding: 0 0.06em 0.14em; margin: 0 -0.06em -0.14em; }
+.ab-wi { display: inline-block; will-change: transform; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ab-js :is([data-ab-reveal], [data-ab-split], [data-ab-stat], [data-ab-line], [data-ab-visual]) { visibility: visible; }
+}
+</style>

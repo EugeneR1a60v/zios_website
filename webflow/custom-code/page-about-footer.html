@@ -1,0 +1,174 @@
+<!-- ABOUT US REVEALS (source: webflow/custom-code/about-reveal.js) -->
+<script>
+// About us: GSAP reveal animations for the hero (Figma 10091:14358) and the
+// intro section (Figma 10091:14430).
+//  - Hero (on load): background settles from a slight zoom, eyebrow fades up,
+//    the heading rises word by word out of a mask (stagger).
+//  - Hero stats (when scrolled into view): stats fade up with a stagger, the
+//    divider draws from left to right, numbers count up to their value
+//    (650+, 99.9%, 15,000+, 500K+; 24/7 is left as is).
+//  - Intro (when scrolled into view): eyebrow, title words and text stagger in,
+//    the photo uncovers from the bottom while it settles from a slight zoom.
+// Elements are marked with data-ab-* attributes in Webflow. They start hidden
+// via the page head CSS (only while <html> has .ab-js); this script reveals
+// them, and if it can't run (no GSAP, reduced motion) it simply shows them.
+// Lives in the About us page footer custom code; loads GSAP/ScrollTrigger from
+// jsDelivr only if the page doesn't already have them.
+(function () {
+  var root = document.documentElement;
+  window.__abReveal = true;
+
+  function showAll() { root.classList.remove('ab-js'); }
+
+  function loadScript(src) {
+    return new Promise(function (resolve, reject) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.onload = resolve;
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+
+  function ensureGsap() {
+    var chain = Promise.resolve();
+    if (typeof window.gsap === 'undefined') {
+      chain = chain.then(function () { return loadScript('https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js'); });
+    }
+    return chain.then(function () {
+      if (typeof window.ScrollTrigger === 'undefined') {
+        return loadScript('https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js');
+      }
+    });
+  }
+
+  // Wrap each word in a mask so it can rise into view. The heading keeps its
+  // text for assistive tech through aria-label.
+  function splitWords(el) {
+    var text = el.textContent.replace(/\s+/g, ' ').trim();
+    el.setAttribute('aria-label', text);
+    el.textContent = '';
+    text.split(' ').forEach(function (word, i) {
+      if (i) el.appendChild(document.createTextNode(' '));
+      var mask = document.createElement('span');
+      mask.className = 'ab-w';
+      mask.setAttribute('aria-hidden', 'true');
+      var inner = document.createElement('span');
+      inner.className = 'ab-wi';
+      inner.textContent = word;
+      mask.appendChild(inner);
+      el.appendChild(mask);
+    });
+    return el.querySelectorAll('.ab-wi');
+  }
+
+  // "15,000+" -> { value: 15000, decimals: 0, comma: true, prefix: '', suffix: '+' }
+  function parseCount(text) {
+    var m = text.trim().match(/^([^\d]*)([\d][\d,]*(?:\.\d+)?)(.*)$/);
+    if (!m) return null;
+    var num = m[2];
+    var dot = num.indexOf('.');
+    return {
+      prefix: m[1],
+      value: parseFloat(num.replace(/,/g, '')),
+      decimals: dot === -1 ? 0 : num.length - dot - 1,
+      comma: num.indexOf(',') !== -1,
+      suffix: m[3]
+    };
+  }
+
+  function formatCount(c, v) {
+    var s = c.comma
+      ? v.toLocaleString('en-US', { minimumFractionDigits: c.decimals, maximumFractionDigits: c.decimals })
+      : v.toFixed(c.decimals);
+    return c.prefix + s + c.suffix;
+  }
+
+  function countUp(el, delay) {
+    var c = parseCount(el.textContent);
+    if (!c) return;
+    var o = { v: 0 };
+    el.textContent = formatCount(c, 0);
+    gsap.to(o, {
+      v: c.value,
+      duration: 1.8,
+      delay: delay,
+      ease: 'power3.out',
+      onUpdate: function () { el.textContent = formatCount(c, o.v); },
+      onComplete: function () { el.textContent = formatCount(c, c.value); }
+    });
+  }
+
+  function initHero(sec) {
+    var bg = sec.querySelector('.abouthero_bg');
+    var eyebrow = sec.querySelectorAll('[data-ab-reveal]');
+    var heading = sec.querySelector('[data-ab-split]');
+    var words = heading ? splitWords(heading) : [];
+    var stats = sec.querySelectorAll('[data-ab-stat]');
+    var line = sec.querySelector('[data-ab-line]');
+    var counts = sec.querySelectorAll('[data-ab-count]');
+
+    gsap.set([eyebrow, heading, stats, line], { autoAlpha: 1 });
+
+    var tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+    if (bg) tl.fromTo(bg, { scale: 1.08 }, { scale: 1, duration: 2.4, ease: 'power2.out' }, 0);
+    tl.from(eyebrow, { y: 24, autoAlpha: 0, duration: 0.9 }, 0.15)
+      .from(words, { yPercent: 110, duration: 1.1, stagger: 0.06 }, 0.25);
+
+    var statsTl = gsap.timeline({
+      defaults: { ease: 'power3.out' },
+      scrollTrigger: { trigger: sec.querySelector('.abouthero_stats'), start: 'top 90%', once: true }
+    });
+    statsTl.from(stats, { y: 40, autoAlpha: 0, duration: 1, stagger: 0.12 }, 0);
+    if (line) statsTl.from(line, { scaleX: 0, transformOrigin: '0% 50%', duration: 1.4, ease: 'power3.inOut' }, 0.2);
+    statsTl.add(function () {
+      counts.forEach(function (el, i) { countUp(el, i * 0.12); });
+    }, 0);
+  }
+
+  function initIntro(sec) {
+    var eyebrow = sec.querySelector('.aboutintro_eyebrow');
+    var title = sec.querySelector('[data-ab-split]');
+    var words = title ? splitWords(title) : [];
+    var text = sec.querySelector('.aboutintro_text');
+    var visual = sec.querySelector('[data-ab-visual]');
+    var img = visual && visual.querySelector('img');
+
+    gsap.set([eyebrow, title, text, visual], { autoAlpha: 1 });
+
+    var tl = gsap.timeline({
+      defaults: { ease: 'power4.out' },
+      scrollTrigger: { trigger: sec, start: 'top 75%', once: true }
+    });
+    if (visual) {
+      tl.fromTo(visual, { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.4, ease: 'power3.inOut' }, 0);
+      if (img) tl.fromTo(img, { scale: 1.2 }, { scale: 1, duration: 1.8, ease: 'power3.out' }, 0);
+    }
+    tl.from(eyebrow, { y: 24, autoAlpha: 0, duration: 0.9 }, 0.1)
+      .from(words, { yPercent: 110, duration: 1, stagger: 0.05 }, 0.25)
+      .from(text, { y: 30, autoAlpha: 0, duration: 1 }, 0.55);
+  }
+
+  function init() {
+    var hero = document.querySelector('.abouthero_sec');
+    var intro = document.querySelector('.aboutintro_sec');
+    if (!hero && !intro) return showAll();
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return showAll();
+    gsap.registerPlugin(ScrollTrigger);
+    if (hero) initHero(hero);
+    if (intro) initIntro(intro);
+    root.classList.remove('ab-js');
+    ScrollTrigger.refresh();
+  }
+
+  function start() {
+    ensureGsap()
+      .then(function () { return document.fonts ? document.fonts.ready : null; })
+      .then(init)
+      .catch(showAll);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+  else start();
+})();
+</script>
