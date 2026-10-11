@@ -6,7 +6,7 @@ setTimeout(function () { if (!window.__abReveal) document.documentElement.classL
 </script>
 <style>
 /* Figma measures every gap from the trimmed text box (cap height to baseline); trim the same way where supported. */
-.abouthero_sec :is(h1, h2, p), .aboutintro_sec :is(h2, p), .abouttl_sec :is(h3, p) { text-box: trim-both cap alphabetic; }
+.abouthero_sec :is(h1, h2, p), .aboutintro_sec :is(h2, p), .abouttl_sec :is(h3, p), .aboutappr_sec :is(h2, h3, p) { text-box: trim-both cap alphabetic; }
 
 /* Timeline (Figma 10091:14431): dark blue to bright blue, year boxes in blue-100 at 25% with a fine white dot grid,
    progress line glows. Figma's end colour #0465cf has no swatch; mixed from blue-100 and blue-130 (closest, flagged). */
@@ -17,16 +17,25 @@ setTimeout(function () { if (!window.__abReveal) document.documentElement.classL
   background-size: 7.5px 7.5px;
   background-position: 0 0;
 }
+/* Approach and Mission (Figma 10106:15514): card fills. Figma uses #409bff, #0465cf, #0c76ea, #0c4481, #f2f7fe and
+   #3b5168 (light-card text), none of which are swatches; each is mixed from the nearest two swatches (flagged). */
+.aboutappr_card.is-light { background-image: linear-gradient(180deg, var(--swatch--blue-10), color-mix(in srgb, var(--swatch--blue-10) 50%, var(--swatch--white-100))); }
+.aboutappr_card.is-light-rev { background-image: linear-gradient(180deg, color-mix(in srgb, var(--swatch--blue-10) 50%, var(--swatch--white-100)), var(--swatch--blue-10)); }
+.aboutappr_card.is-blue { background-color: color-mix(in srgb, var(--swatch--blue-80) 65%, var(--swatch--blue-100)); }
+.aboutappr_card.is-mission { background-image: linear-gradient(180deg, color-mix(in srgb, var(--swatch--blue-100) 45%, var(--swatch--blue-130)), color-mix(in srgb, var(--swatch--blue-100) 70%, var(--swatch--blue-130))); }
+.aboutappr_card.is-dark { background-image: linear-gradient(180deg, var(--swatch--blue-180), color-mix(in srgb, var(--swatch--blue-160) 70%, var(--swatch--blue-130))); }
+.aboutappr_card:is(.is-light, .is-light-rev) .aboutappr_card_text { color: color-mix(in srgb, var(--swatch--blue-160) 60%, var(--swatch--black-50)); }
+
 .abouttl_progress { box-shadow: 0 0 6px 1px color-mix(in srgb, var(--swatch--blue-60) 70%, transparent); transform-origin: 50% 0; }
 
 /* Reveal starting state (only while JS is pending). */
-.ab-js :is([data-ab-reveal], [data-ab-split], [data-ab-stat], [data-ab-line], [data-ab-visual], [data-ab-tl-item]) { visibility: hidden; }
+.ab-js :is([data-ab-reveal], [data-ab-split], [data-ab-stat], [data-ab-line], [data-ab-visual], [data-ab-tl-item], [data-ab-appr-card]) { visibility: hidden; }
 
 /* Word masks for the split headings. */
 .ab-w { display: inline-block; overflow: hidden; vertical-align: top; padding: 0 0.06em 0.14em; margin: 0 -0.06em -0.14em; }
 .ab-wi { display: inline-block; will-change: transform; }
 
 @media (prefers-reduced-motion: reduce) {
-  .ab-js :is([data-ab-reveal], [data-ab-split], [data-ab-stat], [data-ab-line], [data-ab-visual], [data-ab-tl-item]) { visibility: visible; }
+  .ab-js :is([data-ab-reveal], [data-ab-split], [data-ab-stat], [data-ab-line], [data-ab-visual], [data-ab-tl-item], [data-ab-appr-card]) { visibility: visible; }
 }
 </style>

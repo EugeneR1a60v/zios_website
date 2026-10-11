@@ -10,6 +10,8 @@
 //  - Timeline (Figma 10091:14431): the bright centre line fills down the track
 //    with scroll (scrubbed); each milestone's year box opens from the centre
 //    line outwards, the year rises inside it, then the text fades up.
+//  - Approach and Mission (Figma 10106:15514): title words rise, subtitle fades;
+//    per row the cards rise in turn, icons pop, copy follows, ASCII art scans in.
 // Elements are marked with data-ab-* attributes in Webflow. They start hidden
 // via the page head CSS (only while <html> has .ab-js); this script reveals
 // them, and if it can't run (no GSAP, reduced motion) it simply shows them.
@@ -184,16 +186,53 @@
     });
   }
 
+  function initApproach(sec) {
+    var title = sec.querySelector('[data-ab-split]');
+    var words = title ? splitWords(title) : [];
+    var sub = sec.querySelector('.aboutappr_sub');
+
+    gsap.set([title, sub], { autoAlpha: 1 });
+    gsap.timeline({
+      defaults: { ease: 'power4.out' },
+      scrollTrigger: { trigger: sec, start: 'top 75%', once: true }
+    })
+      .from(words, { yPercent: 110, duration: 1, stagger: 0.05 }, 0)
+      .from(sub, { y: 24, autoAlpha: 0, duration: 0.9 }, 0.3);
+
+    // Each row: its cards rise in turn; inside each card the icon pops, the copy
+    // follows line by line and the ASCII art scans in from the bottom in steps.
+    sec.querySelectorAll('[data-ab-appr-row]').forEach(function (row) {
+      var cards = row.querySelectorAll('[data-ab-appr-card]');
+      gsap.set(cards, { autoAlpha: 1 });
+      var tl = gsap.timeline({
+        defaults: { ease: 'power4.out' },
+        scrollTrigger: { trigger: row, start: 'top 80%', once: true }
+      });
+      cards.forEach(function (card, i) {
+        var at = i * 0.15;
+        var icon = card.querySelector('.aboutappr_icon');
+        var copy = card.querySelectorAll('.aboutappr_card_title, .aboutappr_card_text');
+        var ascii = card.querySelector('[data-ab-appr-ascii]');
+        tl.from(card, { y: 60, autoAlpha: 0, duration: 1.1 }, at);
+        if (icon) tl.from(icon, { scale: 0.4, rotate: -20, autoAlpha: 0, duration: 0.8, ease: 'back.out(2)' }, at + 0.3);
+        if (copy.length) tl.from(copy, { y: 24, autoAlpha: 0, duration: 0.9, stagger: 0.07 }, at + 0.25);
+        if (ascii) tl.fromTo(ascii, { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.4, ease: 'steps(14)' }, at + 0.35);
+      });
+    });
+  }
+
   function init() {
     var hero = document.querySelector('.abouthero_sec');
     var intro = document.querySelector('.aboutintro_sec');
     var timeline = document.querySelector('.abouttl_sec');
-    if (!hero && !intro && !timeline) return showAll();
+    var approach = document.querySelector('.aboutappr_sec');
+    if (!hero && !intro && !timeline && !approach) return showAll();
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return showAll();
     gsap.registerPlugin(ScrollTrigger);
     if (hero) initHero(hero);
     if (intro) initIntro(intro);
     if (timeline) initTimeline(timeline);
+    if (approach) initApproach(approach);
     root.classList.remove('ab-js');
     ScrollTrigger.refresh();
   }
