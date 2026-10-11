@@ -12,6 +12,8 @@
 //    line outwards, the year rises inside it, then the text fades up.
 //  - Approach and Mission (Figma 10106:15514): title words rise, subtitle fades;
 //    per row the cards rise in turn, icons pop, copy follows, ASCII art scans in.
+//  - CTA (Figma 10105:14455): title words rise line by line, text and button
+//    follow; the photo settles from a zoom and the ASCII layer drifts with scroll.
 // Elements are marked with data-ab-* attributes in Webflow. They start hidden
 // via the page head CSS (only while <html> has .ab-js); this script reveals
 // them, and if it can't run (no GSAP, reduced motion) it simply shows them.
@@ -45,22 +47,31 @@
     });
   }
 
-  // Wrap each word in a mask so it can rise into view. The heading keeps its
-  // text for assistive tech through aria-label.
+  // Wrap each word in a mask so it can rise into view; <br> line breaks are kept.
+  // The heading keeps its text for assistive tech through aria-label.
   function splitWords(el) {
-    var text = el.textContent.replace(/\s+/g, ' ').trim();
-    el.setAttribute('aria-label', text);
+    var lines = [[]];
+    el.childNodes.forEach(function (node) {
+      if (node.nodeName === 'BR') lines.push([]);
+      else lines[lines.length - 1].push(node.textContent);
+    });
+    lines = lines.map(function (l) { return l.join('').replace(/\s+/g, ' ').trim(); });
+    el.setAttribute('aria-label', lines.join(' '));
     el.textContent = '';
-    text.split(' ').forEach(function (word, i) {
-      if (i) el.appendChild(document.createTextNode(' '));
-      var mask = document.createElement('span');
-      mask.className = 'ab-w';
-      mask.setAttribute('aria-hidden', 'true');
-      var inner = document.createElement('span');
-      inner.className = 'ab-wi';
-      inner.textContent = word;
-      mask.appendChild(inner);
-      el.appendChild(mask);
+    lines.forEach(function (line, li) {
+      if (li) el.appendChild(document.createElement('br'));
+      line.split(' ').forEach(function (word, i) {
+        if (!word) return;
+        if (i) el.appendChild(document.createTextNode(' '));
+        var mask = document.createElement('span');
+        mask.className = 'ab-w';
+        mask.setAttribute('aria-hidden', 'true');
+        var inner = document.createElement('span');
+        inner.className = 'ab-wi';
+        inner.textContent = word;
+        mask.appendChild(inner);
+        el.appendChild(mask);
+      });
     });
     return el.querySelectorAll('.ab-wi');
   }
@@ -221,18 +232,46 @@
     });
   }
 
+  function initCta(sec) {
+    var title = sec.querySelector('[data-ab-split]');
+    var words = title ? splitWords(title) : [];
+    var rest = sec.querySelectorAll('[data-ab-reveal]');
+    var photo = sec.querySelector('[data-ab-cta-photo]');
+    var ascii = sec.querySelector('[data-ab-cta-ascii]');
+
+    gsap.set([title, rest], { autoAlpha: 1 });
+    var tl = gsap.timeline({
+      defaults: { ease: 'power4.out' },
+      scrollTrigger: { trigger: sec, start: 'top 70%', once: true }
+    });
+    tl.from(words, { yPercent: 110, duration: 1.1, stagger: 0.07 }, 0)
+      .from(rest, { y: 30, autoAlpha: 0, duration: 1, stagger: 0.15 }, 0.35);
+    if (photo) tl.fromTo(photo, { scale: 1.15 }, { scale: 1, duration: 2.4, ease: 'power2.out' }, 0);
+
+    // The ASCII layer is wider than the section; let it drift sideways as the section scrolls by.
+    if (ascii) {
+      gsap.fromTo(ascii, { xPercent: 0 }, {
+        xPercent: -8,
+        ease: 'none',
+        scrollTrigger: { trigger: sec, start: 'top bottom', end: 'bottom top', scrub: 0.6 }
+      });
+    }
+  }
+
   function init() {
     var hero = document.querySelector('.abouthero_sec');
     var intro = document.querySelector('.aboutintro_sec');
     var timeline = document.querySelector('.abouttl_sec');
     var approach = document.querySelector('.aboutappr_sec');
-    if (!hero && !intro && !timeline && !approach) return showAll();
+    var cta = document.querySelector('.aboutcta_sec');
+    if (!hero && !intro && !timeline && !approach && !cta) return showAll();
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return showAll();
     gsap.registerPlugin(ScrollTrigger);
     if (hero) initHero(hero);
     if (intro) initIntro(intro);
     if (timeline) initTimeline(timeline);
     if (approach) initApproach(approach);
+    if (cta) initCta(cta);
     root.classList.remove('ab-js');
     ScrollTrigger.refresh();
   }
