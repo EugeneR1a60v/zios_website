@@ -1,0 +1,9 @@
+<style>
+.swiper-slide.news:hover .news_image{
+  transform: scale(1.1);
+}
+/* Figma 10106:14489 (versioned: webflow/custom-code/news-section.css): Medium H3 title,
+   gaps measured from the trimmed text box (cap height to baseline). */
+.news_sec .g-swiper_title { margin-top: 0; margin-bottom: 0; font-weight: 500; line-height: 1.105; text-transform: capitalize; }
+.news_sec :is(.g-swiper_title, .news_slide_title, .news_slide_text) { text-box: trim-both cap alphabetic; }
+</style>
