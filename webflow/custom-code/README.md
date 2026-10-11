@@ -5,5 +5,6 @@ Name each file after where it lives, e.g. `site-head.html`, `page-home-footer.ht
 
 ## About us page
 
-- `page-about-head.html` → About us page head code (text-box trim, reveal start states, word masks).
+- `page-about-head.html` → About us page head code: styles (text-box trim, card fills, reveal start states, word masks) followed by `about-approach-ascii.js` in a script tag.
+- `about-approach-ascii.js` is generated: edit `about-approach-ascii.src.js` (renderer) and run `python3 tools/build-about-ascii.py` (traces the Figma ASCII PNGs into character maps), then paste the result into the head block.
 - `page-about-footer.html` → About us page footer code; it is `about-reveal.js` wrapped in a script tag. Edit the `.js`, then rebuild the `.html`.
