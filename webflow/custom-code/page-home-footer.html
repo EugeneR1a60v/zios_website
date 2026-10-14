@@ -1,0 +1,707 @@
+<!-- Swiper.js  -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script> -->
+
+<!-- CLAUDFLARED LOCAL TUNNEL -->
+<!-- <script src="https://anyone-cottages-towns-dependence.trycloudflare.com/app.js"></script> -->
+
+<!-- GITHUB SCRIPT -->
+<!-- <script src="https://cdn.jsdelivr.net/gh/ndrewfrolov/zios@main/dist/app.js"></script> -->
+
+<!-- LOCAL HOST SCRIPT -->
+<!-- <script src="https://a4892c53000a55.lhr.life/app.js"></script> -->
+
+<!-- NETLIFy STYLES SCRIPT -->
+<script src="https://zios-webflow.netlify.app/app.js"></script>
+
+
+<!-- SWIPERS -->
+<script>
+// const swiperExpertise = new Swiper('[swiper="expertise"] .swiper', {
+//   speed: 700,
+//   slidesPerView: 'auto',
+//   grabCursor: true,
+//   observer: true,
+//   breakpoints: {
+//     320: {
+//       spaceBetween: 0,
+//       centeredSlides: true,
+//       loop: false
+//     },
+//     991: {
+//       spaceBetween: '2.48%',
+//     }
+//   },
+//   // navigation: {
+//   //   nextEl: '[swiper="expertise"] .swiper-button.next',
+//   //   prevEl: '[swiper="expertise"] .swiper-button.prev'
+//   // },
+// });
+  
+// const swiperReviews = new Swiper('[swiper="reviews"] .swiper', {
+//   speed: 700,
+//   slidesPerView: 'auto',
+//   grabCursor: true,
+//   breakpoints: {
+//     // when width is >=
+//     320: {
+//       spaceBetween: 0,
+//       spaceBetween: '4.26%',
+//       slidesPerGroup: 1,
+//       centeredSlides: true,
+//       loop: false
+//     },
+//     // when width is >=
+//     991: {
+//       spaceBetween: '2.48%',
+//       slidesPerGroup: 1,
+//       centeredSlides: true,
+//       loop: true,
+//       loopedSlides: 0
+//     }
+//   },
+//   pagination: {
+//     el: '.reviews-pagination',
+//     clickable: true,
+//     bulletClass: 'reviews-bullet', 
+//     bulletActiveClass: 'active'
+//   },
+//   navigation: {
+//     nextEl: '[swiper="reviews"] .swiper-button.next',
+//     prevEl: '[swiper="reviews"] .swiper-button.prev'
+//   },
+// })
+  
+// let resizeTimeout;
+
+// window.addEventListener('resize', () => {
+//   clearTimeout(resizeTimeout);
+
+//   resizeTimeout = setTimeout(() => {
+//     swiperReviews.update();
+//   }, 150);
+// });
+</script>
+
+<script>
+(function() {
+  const BUBBLE_HIDDEN_KEY = 'chat_bubble_hidden';
+  const COOKIES_ACCEPTED_KEY = 'cookiesAccepted';
+
+  if (localStorage.getItem(COOKIES_ACCEPTED_KEY) === null) {
+    localStorage.setItem(COOKIES_ACCEPTED_KEY, 'false');
+  }
+  const cookiesAccepted = localStorage.getItem(COOKIES_ACCEPTED_KEY) === 'true';
+  
+  const widget = document.querySelector('.chat_widget_wr');
+  if (!widget) {
+    console.log('Chat widget isnt found')
+    return
+  }
+  
+  const cookieBanner = document.getElementById('cookie-banner');
+  const cookieCloseBtn = document.getElementById('cookie_close_btn');
+  const acceptCookiesBtn = document.getElementById('accept-cookies');
+  const declineCookiesBtn = document.getElementById('decline-cookies');
+  const chatWidgetComponent = document.getElementById('chat_widget_component');
+  const openBtn = widget.querySelector('.chat_widget_action_icon');
+  const closeBtn = widget.querySelector('.chat_widget_close_wr');
+  const chatBubbleEl = document.getElementById('chat-bubbleEl');
+  const chatBubbleCloseEl = document.getElementById('chat-bubble-closeEl');
+  
+  // --- Cookie banner ---
+  if (cookieBanner) {
+    if (cookiesAccepted) {
+      cookieBanner.classList.add('hide');
+    } else {
+      cookieBanner.classList.remove('hide');
+    }
+  }
+
+  function closeBanner() {
+    if (cookieBanner) cookieBanner.classList.add('hide');
+  }
+
+  if (cookieCloseBtn) {
+    cookieCloseBtn.addEventListener('click', closeBanner);
+  }
+
+  if (acceptCookiesBtn) {
+    acceptCookiesBtn.addEventListener('click', () => {
+      localStorage.setItem(COOKIES_ACCEPTED_KEY, 'true');
+      closeBanner();
+      if (widget) chatWidgetComponent.classList.remove('hide');
+    });
+  }
+
+  if (declineCookiesBtn) {
+    declineCookiesBtn.addEventListener('click', closeBanner);
+  }
+  
+  // --- Widget Component ---
+  if (cookiesAccepted) {
+    chatWidgetComponent.classList.remove('hide');
+  } else {
+    chatWidgetComponent.classList.add('hide');
+  }
+  
+  // --- Chat widget Bubble ---
+  function hideBubble() {
+    if (!chatBubbleEl) return;
+    chatBubbleEl.classList.add('hide');
+    localStorage.setItem(BUBBLE_HIDDEN_KEY, 'true');
+  }
+
+  function initBubbleState() {
+    if (!chatBubbleEl) return;
+    if (localStorage.getItem(BUBBLE_HIDDEN_KEY) === 'true') {
+      chatBubbleEl.classList.add('hide');
+    }
+  }
+
+  if (chatBubbleCloseEl) {
+    chatBubbleCloseEl.addEventListener('click', hideBubble);
+  }
+
+  initBubbleState();
+
+  // --- Chat open/close ---
+  function openChat() {
+    widget.classList.add('is-open');
+    if (chatBubbleEl && !chatBubbleEl.classList.contains('hide')) {
+      hideBubble();
+    }
+  }
+  
+  function closeChat() {
+    widget.classList.remove('is-open');
+  }
+  
+  openBtn.addEventListener('click', openChat);
+  closeBtn.addEventListener('click', closeChat);
+  
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && widget.classList.contains('is-open')) {
+      closeChat();
+    }
+  });
+})();
+</script>
+
+<script>
+function numberElements(selector) {
+  document.querySelectorAll(selector).forEach((el, index) => {
+    el.innerText = String(index + 1).padStart(2, '0');
+  });
+}
+function numberElements2(selector) {
+  document.querySelectorAll(selector).forEach((el, index) => {
+    el.innerText = String(index + 1);
+  });
+}
+numberElements('.indastries_card_number');
+numberElements('.accordion_card_number');
+numberElements2('.products_item_number_span');
+</script>
+
+<script>
+  //REVIEWS INTERACTION 
+
+</script>
+
+<!-- HOME REDESIGN: expertise slider v3 (versioned in strawberryjohn/zios_website: webflow/custom-code/home-expertise-v3.js) -->
+<script>
+window.addEventListener('load', function () {
+  var root = document.querySelector('[data-expert]');
+  if (!root || typeof Swiper === 'undefined') return;
+  var el = root.querySelector('.expert_swiper');
+  var wrapper = el.querySelector('.swiper-wrapper');
+  var tabs = Array.prototype.slice.call(root.querySelectorAll('.expert_tab'));
+  var prev = root.querySelector('.expert_nav.is-prev');
+  var next = root.querySelector('.expert_nav.is-next');
+
+  var originals = Array.prototype.slice.call(wrapper.children);
+  var count = originals.length;
+  originals.forEach(function (slide) {
+    var clone = slide.cloneNode(true);
+    clone.setAttribute('aria-hidden', 'true');
+    wrapper.appendChild(clone);
+  });
+
+  function gap() {
+    return 1.5 * parseFloat(getComputedStyle(document.documentElement).fontSize);
+  }
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var swiper = new Swiper(el, {
+    loop: true,
+    slidesPerView: 'auto',
+    centeredSlides: true,
+    spaceBetween: gap(),
+    speed: 800,
+    grabCursor: true,
+    autoplay: reduceMotion ? false : { delay: 6000, disableOnInteraction: false },
+    navigation: { prevEl: prev, nextEl: next }
+  });
+
+  function fill(i, ratio) {
+    var f = tabs[i] && tabs[i].querySelector('.expert_tab_fill');
+    if (f) f.style.width = (ratio * 100).toFixed(2) + '%';
+  }
+  function syncTabs() {
+    var active = swiper.realIndex % count;
+    tabs.forEach(function (tab, i) {
+      var on = i === active;
+      tab.classList.toggle('is-active', on);
+      tab.setAttribute('aria-selected', on ? 'true' : 'false');
+      fill(i, on && reduceMotion ? 1 : 0);
+    });
+  }
+  swiper.on('slideChange', syncTabs);
+  swiper.on('autoplayTimeLeft', function (s, ms, progress) {
+    fill(swiper.realIndex % count, 1 - progress);
+  });
+  syncTabs();
+
+  function activate(fn) {
+    return function (e) {
+      if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
+      e.preventDefault();
+      fn();
+    };
+  }
+  tabs.forEach(function (tab, i) {
+    var go = activate(function () { swiper.slideToLoop(i); });
+    tab.addEventListener('click', go);
+    tab.addEventListener('keydown', go);
+  });
+  [[prev, 'slidePrev'], [next, 'slideNext']].forEach(function (p) {
+    p[0].addEventListener('keydown', activate(function () { swiper[p[1]](); }));
+  });
+
+  var t;
+  window.addEventListener('resize', function () {
+    clearTimeout(t);
+    t = setTimeout(function () { swiper.params.spaceBetween = gap(); swiper.update(); }, 150);
+  });
+});
+</script>
+<!-- HOME REDESIGN: animated binary ASCII mountain (digits) for Über Zios + the footer's blue panel, outline traced from the approved reference (versioned in strawberryjohn/zios_website: webflow/custom-code/ascii-mountain.js) -->
+<script>
+// Binary ASCII mountain for the blue gradient panels: Home Über Zios, What we
+// do Reinvention (same .aboutUs_ascii host) and the global Footer's blue CTA
+// panel. The outline is traced from the approved reference (1440x465): a long
+// ridge climbing from the lower left to one peak at ~80% of the width, then a
+// short steep fall on the right. Cells are 9.3x10.1 px; rows are
+// 'leadingSpaces:levels', levels 1-8 = ink density in the reference.
+// Only digits are drawn: faint cells get a dim '1', mid cells mostly '1',
+// dense cells (ridge highlights, lower-left foot) mostly '0'. Light weight and
+// low opacity keep it airy. Motion: now and then a digit flips, and a few
+// digits briefly brighten (quick rise, slow fade). The hero uses the same
+// digit mapping (home-hero-ascii.js) on its own outline.
+// Each host gets a canvas: full width up to 1920px (120rem), bottom-aligned,
+// at most maxH of the host height (then only the row spacing tightens). On
+// narrow screens the left foothills crop so the peak stays in view. Reduced
+// motion gets a still frame. Safe in page head or footer (waits for the DOM),
+// and a host is only filled once.
+(function () {
+  if (!window.HTMLCanvasElement) return;
+  var TARGETS = [
+    // Über Zios / Reinvention: the bottom-right corner dims behind the link.
+    { sel: '.aboutus_ascii, .aboutUs_ascii', maxH: 0.6, corner: true },
+    { sel: '.footer_action_visual_wr', maxH: 0.82, corner: false }
+  ];
+
+  var IW = 1440, IH = 465, PW = 9.3, PH = 10.1, OX = -0.47, OY = -2.66, FIRST_ROW = 9;
+  var GRID = '120:1341|120:56653|119:11876655|117:14 47667666|116:141542657666662|115:1114 73656656656652|114:45515676657666666663|114:256 57777677677677676311|112:3441 3766666766766766766761 1111|111:35333237537667666666666666664666721|105:1111213335314525776776676776766766766776421|103:311111111143115147776773 257767667667667767743331|101:3121111114113644116877682    376766766766776776776542|100:511111111511111124 778761        266766766776776776776|99:1121122115112 545  767731          15766766776776766766|97:111111111151115 54523167               155665666666666666|96:111111111111511 515562762                 1565666666666666|95:11511111111111 115 726775                    56666666666666|62:1                              51111111111111155553677677                      1255666666666|59:5 111      1                   5 1111111151111115 555667765                         14666566666|46:1         1551 11111111111              1  4121111111112115141516877861                            121  1577|42:21  73        5  51111111111111  22         4  114111111111511 4 42677651                                     35|41:245227732222   31232222222222222224421   2221 222222222222133333  17522|40:141111778774611111111111111111111111114333244311111111111113533333312|37:4441111167777313151111111111111111111111452221152111114111141364344411|35:41222111117727756662111111111111111111111155115 121111112115126373333|24:5          222222222722788288222222222222222222222525555 112222225225227746431|22:44554       11111111151111711111111111111111111111555515 5111111111151172727222|14:1     55 5555555  11111111555111111711111111111111111155555555 11111111115511373673333|12:51111 5  555555555111111111555111111111111111111111111115555551111111111155127677762222|10:55111111155555555 11111111115 111111111111111111111113311115 111111111111511167767776733|8:5555111155555555 1111111111155 111111111111111111111111222255 111111111111551172776776|6:555552255555555511111111112551511111111111111111111112257333333111112112225172737777776|2:225555555555555445223222222222454152222222222222222222223534522222225545733757721657267763|1:25555555555555531333133111111131311111111111111111111111134473443446588788878455267876785|0:35555555555555531434511311141313111111111111111111111142412857555555877878877844458758842|0:555555555555552115122111141212111111111111111111111355763567777777777777777733577777642';
+  var FONT = 8.5;           // digit size (reference px)
+  var WEIGHT = 300;
+  var MAX_W_REM = 120, MIN_SCALE = 0.7;
+  // Per level (1-8): share of cells kept, base opacity, chance of '0'.
+  var KEEP = [0, 0.5, 0.75, 0.9, 1, 1, 1, 1, 1];
+  var ALPHA = [0, 0.16, 0.2, 0.26, 0.32, 0.38, 0.44, 0.5, 0.56];
+  var ZERO = [0, 0, 0.05, 0.15, 0.3, 0.45, 0.6, 0.7, 0.75];
+  var SWAP_MS = 180, SWAP = 0.004, SPARK = 0.0008, SPARK_MS = 1800;
+
+  function smooth(a, b, v) { var t = Math.min(1, Math.max(0, (v - a) / (b - a))); return t * t * (3 - 2 * t); }
+  // The left end fades out; the right edge is cut by the panel.
+  function fadeAt(cfg, x, y) {
+    var u = x / IW, f = smooth(0, 0.06, u);
+    if (cfg.corner) {
+      var dx = (1 - u) / 0.2, dy = (IH - y) / (IH * 0.45);
+      f *= 1 - 0.85 * Math.exp(-(dx * dx + dy * dy));
+    }
+    return f;
+  }
+  function pick(z) { return Math.random() < z ? '0' : '1'; }
+
+  var rows = GRID.split('|').map(function (row) {
+    var p = row.split(':');
+    return { pad: +p[0], line: p[1] };
+  });
+  function buildCells(cfg) {
+    var cells = [];
+    rows.forEach(function (row, r) {
+      for (var c = 0; c < row.line.length; c++) {
+        var l = row.line.charCodeAt(c) - 48;
+        if (l < 1 || l > 8 || Math.random() > KEEP[l]) continue;
+        var x = OX + (row.pad + c + 0.5) * PW, y = OY + (FIRST_ROW + r + 0.5) * PH, fade = fadeAt(cfg, x, y);
+        var a = ALPHA[l] * (0.8 + Math.random() * 0.35) * fade;
+        if (a > 0.01) cells.push({ x: x, y: y, z: ZERO[l], ch: pick(ZERO[l]), a: a, fade: fade, glow: 0, t0: 0 });
+      }
+    });
+    return cells;
+  }
+
+  function mount(host, cfg) {
+    if (host.hasAttribute('data-ascii-mounted')) return;
+    host.setAttribute('data-ascii-mounted', '');
+    var cells = buildCells(cfg);
+    var canvas = document.createElement('canvas');
+    canvas.setAttribute('aria-hidden', 'true');
+    canvas.style.cssText = 'position:absolute;left:0;top:0;pointer-events:none;';
+    if (getComputedStyle(host).position === 'static') host.style.position = 'relative';
+    host.appendChild(canvas);
+    var ctx = canvas.getContext('2d');
+    var sx = 1, sy = 1, ox = 0;
+
+    function layout() {
+      var hw = host.clientWidth, hh = host.clientHeight;
+      if (!hw || !hh) return false;
+      var rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+      var w = Math.min(hw, MAX_W_REM * rem);
+      sx = Math.max(w / IW, MIN_SCALE);
+      sy = Math.min(sx, cfg.maxH * hh / IH);
+      ox = w - IW * sx; // right-aligned: on narrow screens the left foothills crop
+      var h = IH * sy;
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.style.width = w + 'px';
+      canvas.style.height = h + 'px';
+      canvas.style.left = (hw - w) / 2 + 'px';
+      canvas.style.top = (hh - h) + 'px';
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.font = WEIGHT + ' ' + (FONT * sy).toFixed(2) + 'px ui-monospace, SFMono-Regular, Menlo, Consolas, "DejaVu Sans Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#ffffff';
+      return true;
+    }
+
+    function paint(c) {
+      var x = ox + c.x * sx, y = c.y * sy;
+      ctx.clearRect(x - PW * sx / 2, y - PH * sy / 2, PW * sx, PH * sy);
+      ctx.globalAlpha = c.a + (c.fade * 0.9 - c.a) * c.glow;
+      ctx.fillText(c.ch, x, y);
+    }
+
+    function drawAll() {
+      if (!layout()) return;
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.restore();
+      for (var i = 0; i < cells.length; i++) paint(cells[i]);
+    }
+
+    var twinkling = [];
+    function batch(now) {
+      var n = cells.length, i, c;
+      for (i = Math.max(1, Math.round(n * SWAP)); i > 0; i--) {
+        c = cells[(Math.random() * n) | 0];
+        if (c.t0) continue;
+        c.ch = pick(c.z);
+        paint(c);
+      }
+      for (i = Math.max(1, Math.round(n * SPARK)); i > 0; i--) {
+        c = cells[(Math.random() * n) | 0];
+        if (c.t0) continue;
+        c.t0 = now;
+        twinkling.push(c);
+      }
+    }
+
+    // Twinkle envelope: rise over the first 15%, ease out over the rest.
+    function twinkle(now) {
+      twinkling = twinkling.filter(function (c) {
+        var p = (now - c.t0) / SPARK_MS;
+        if (p >= 1) { c.glow = 0; c.t0 = 0; paint(c); return false; }
+        c.glow = 0.85 * (p < 0.15 ? p / 0.15 : Math.pow(1 - (p - 0.15) / 0.85, 2));
+        paint(c);
+        return true;
+      });
+    }
+
+    drawAll();
+    if (window.ResizeObserver) new ResizeObserver(drawAll).observe(host);
+    else window.addEventListener('resize', drawAll);
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var visible = true, last = 0;
+    if (window.IntersectionObserver) {
+      new IntersectionObserver(function (e) { visible = e[0].isIntersecting; }).observe(host);
+    }
+    function loop(now) {
+      if (visible && !document.hidden) {
+        if (now - last >= SWAP_MS) { last = now; batch(now); }
+        twinkle(now);
+      }
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+  }
+
+  function init() {
+    TARGETS.forEach(function (cfg) {
+      Array.prototype.forEach.call(document.querySelectorAll(cfg.sel), function (host) { mount(host, cfg); });
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
+
+<!-- HOME REDESIGN: animated binary mountain, hero layer 3 (versioned in strawberryjohn/zios_website: webflow/custom-code/home-hero-ascii.js). Must stay before the hero parallax script. -->
+<script>
+// Animated binary mountain (Home hero, layer 3).
+// Replaces the static ascii-art image (.hero_layer.is-3) with a canvas that
+// redraws the mountain as an airy grid of digits. The outline stays the hero's
+// own (it has to match the parallax layers); the look is the same as the other
+// blue panels (ascii-mountain.js): faint cells get a dim '1', mid cells mostly
+// '1', dense cells mostly '0', light weight and low per-digit opacity.
+// Motion is slow and calm: now and then a digit flips, and a few digits
+// twinkle like snow (quick rise, slow fade).
+// The density map was traced from the exported ascii image (2514x1469, cells
+// 11.79x19.66; rows are 'leadingSpaces:levels', levels 1-8) and is resampled
+// onto a wider lattice (PX x CH) for more air between digits.
+// The canvas takes over the is-3 class so the hero parallax script moves it
+// like the image. Must run before home-hero-parallax.js. Without JS the image
+// stays; with reduced motion you get a still frame.
+(function () {
+  var img = document.querySelector('.hero_layer.is-3');
+  if (!img || !window.HTMLCanvasElement) return;
+
+  var FIRST_ROW = 20;
+  var GRID = '166:131|164:1574221|163:55763232223|160:12768861232223321|159:6576876512321123222211|157:1658685552331333322222222|155:2576865822222223333322222222223|153:2687866565252632223333233322222222213225521|151:56787865768556522222333332223222222222252225523|146:588888858866765555862322222222222322222222222552555552523|142:25556888888765686556578522222222222222222222222222225522255222222|140:268558688888855666855876222222222268 122222222222222222255525222222222|136:2658555558888888556868655555522222225651    221222222222222222255522222225525|134:156655565558865656558665762  132222252653         12222222222222222222222252522|92:121                                     168566855668556665568565865 111111232221              122222222222522222222255525|89:15876551      2          35765         12255555555556566656557665811111122332222                    122222222222222222225255|74:11          25788885588855888885     25788888866655 5555865555655555666568888866231111222521                         1122222222222255555552|70:3222555       3588888658888888888888867888888888888888786555565555666655235888885213333333553                                 21122222222555555|68:2855855566632557888855855588888888888888888887887888887865555556566566652      223221323111 1                                          1122222555|66:2555866565566655555555855655888888888888888888888888878865556556556665555 1                                                                      13|62:2288665556556566665566656555888888888888888888888888887888866665566656665655 3|47:252          18887665565866655666556665655588888888888888888888878888785655666556665556221 2|36:2       55888886551   265885556658866665566655666666665655888888888888888888765556665566556556521 21 2|33:55888623558888888888888885556656565865566655666556665555556555568888888888855556665566655555522     1 1|30:56888888888888888888888555555555655885665666656666556665555555555225885888856666566665566555563       32|27:5588888888888888888888555555566555888556666556665566655655555555666      565565566655655566565522       2|23:2588888888888888888888585555655556558885655666656666556665555556555562 1        122255655556555521         2|10:2555       25888888888888888885585586555555555655555566566665666655666565555555551 1           1112322225252|0:55521 5558888888886688888888888888888855566555655555555566665666656666556665566555555556621         1 11111333222252 1|0:888888888888888888888888888888888888668856555565555566655666556665666655666565555222222211 13      111112223322222|0:88888888888888888888888888888888885555555555556555566665666655666566665666655652222531  2 32    1111111233222251     1|0:88888888888888888888888888888886555555555555555656556665566655666522255522232222222    1 21  11 11111122222251    1|0:888888888888888888888888886655565555655556556566665566655666556652223333322222211 1111 113111111111332232221   11|0:788888888888888888888885555555565555655555666566665566656666565223222333322222  11113122221 11111133332221   1|0:788888888888888888855655555555565555566655666566665666655666512223232222222    1113221222  1111221232231|0:788888888888888865555555555555556665666655666566665666555653332223333322  11111122313222 1112321122311  1|0:788888878555555555555555655666566665566656666555552255522323222233231      111111122221  111111211|0:555555655555555556665666655666556565666652222222225552111111232221        111  112111    13  11|0:5655556555556665555555555555555555555522222222222231111111113221               11          1|0:666666655565555555555555555556555222232222222221    1111111311                           1|0:5555555555555555525252555555223222232323222211     1   1111|0:555222222222222222222222222323322222332321              1|0:2222222222222222222222222321111111111|0:22323333332232332211111111111|0:2232223333333111|0:111111111';
+  var IW = 2514, IH = 1469, CW = 11.79, CH = 19.66, OY = 5;
+  var PX = 16;              // horizontal pitch of the digit lattice (image px)
+  var FONT = 14;            // digit size (image px)
+  var WEIGHT = 300;
+  // Per traced level (1-8): share of cells kept, base opacity, chance of '0'
+  // (same mapping as ascii-mountain.js, so all mountains read as one family).
+  var KEEP = [0, 0.5, 0.75, 0.9, 1, 1, 1, 1, 1];
+  var ALPHA = [0, 0.16, 0.2, 0.26, 0.32, 0.38, 0.44, 0.5, 0.56];
+  var ZERO = [0, 0, 0.05, 0.15, 0.3, 0.45, 0.6, 0.7, 0.75];
+  var SWAP_MS = 180;        // how often a batch of digits changes
+  var SWAP = 0.004;         // share of digits that flip per batch
+  var SPARK = 0.0008;       // share of digits that start twinkling per batch
+  var SPARK_MS = 1800;      // twinkle duration
+
+  function pick(z) { return Math.random() < z ? '0' : '1'; }
+
+  // Density level at an image-space point, from the traced grid.
+  var rows = GRID.split('|').map(function (row) {
+    var p = row.split(':');
+    return { pad: +p[0], line: p[1] };
+  });
+  function levelAt(x, y) {
+    var r = Math.floor((y - OY) / CH) - FIRST_ROW;
+    if (r < 0 || r >= rows.length) return 0;
+    var c = Math.floor(x / CW) - rows[r].pad;
+    var ch = rows[r].line.charCodeAt(c) - 48;
+    return ch > 0 && ch < 9 ? ch : 0;
+  }
+
+  var cells = [];
+  for (var x = PX / 2; x < IW; x += PX) {
+    for (var r = 0; r < rows.length; r++) {
+      var y = OY + (FIRST_ROW + r + 0.5) * CH;
+      var l = levelAt(x, y);
+      if (!l || Math.random() > KEEP[l]) continue;
+      cells.push({
+        x: x, y: y, z: ZERO[l], ch: pick(ZERO[l]),
+        a: ALPHA[l] * (0.8 + Math.random() * 0.35),
+        glow: 0, t0: 0
+      });
+    }
+  }
+
+  var canvas = document.createElement('canvas');
+  canvas.className = img.className;
+  canvas.setAttribute('aria-hidden', 'true');
+  img.parentNode.insertBefore(canvas, img);
+  img.classList.remove('is-3');
+  img.style.display = 'none';
+
+  var ctx = canvas.getContext('2d');
+
+  // Same framing as the image had: object-fit: cover, object-position 50% 100%.
+  function layout() {
+    var w = canvas.clientWidth, h = canvas.clientHeight;
+    if (!w || !h) return false;
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    var s = Math.max(w / IW, h / IH);
+    ctx.setTransform(dpr * s, 0, 0, dpr * s, dpr * (w - IW * s) / 2, dpr * (h - IH * s));
+    ctx.font = WEIGHT + ' ' + FONT + 'px ui-monospace, SFMono-Regular, Menlo, Consolas, "DejaVu Sans Mono", monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#ffffff';
+    return true;
+  }
+
+  function paint(cell) {
+    ctx.clearRect(cell.x - PX / 2, cell.y - CH / 2, PX, CH);
+    ctx.globalAlpha = cell.a + (0.9 - cell.a) * cell.glow;
+    ctx.fillText(cell.ch, cell.x, cell.y);
+  }
+
+  function drawAll() {
+    if (!layout()) return;
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.restore();
+    for (var i = 0; i < cells.length; i++) paint(cells[i]);
+  }
+
+  var twinkling = [];
+  function batch(now) {
+    var n = cells.length, i, cell;
+    for (i = Math.max(1, Math.round(n * SWAP)); i > 0; i--) {
+      cell = cells[(Math.random() * n) | 0];
+      if (cell.t0) continue;
+      cell.ch = pick(cell.z);
+      paint(cell);
+    }
+    for (i = Math.max(1, Math.round(n * SPARK)); i > 0; i--) {
+      cell = cells[(Math.random() * n) | 0];
+      if (cell.t0) continue;
+      cell.t0 = now;
+      twinkling.push(cell);
+    }
+  }
+
+  // Twinkle envelope: rise over the first 15%, ease out over the rest.
+  function twinkle(now) {
+    twinkling = twinkling.filter(function (c) {
+      var p = (now - c.t0) / SPARK_MS;
+      if (p >= 1) { c.glow = 0; c.t0 = 0; paint(c); return false; }
+      c.glow = 0.85 * (p < 0.15 ? p / 0.15 : Math.pow(1 - (p - 0.15) / 0.85, 2));
+      paint(c);
+      return true;
+    });
+  }
+
+  drawAll();
+  if (window.ResizeObserver) new ResizeObserver(drawAll).observe(canvas);
+  else window.addEventListener('resize', drawAll);
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var visible = true, last = 0;
+  if (window.IntersectionObserver) {
+    new IntersectionObserver(function (e) { visible = e[0].isIntersecting; }).observe(canvas);
+  }
+  function loop(now) {
+    if (visible && !document.hidden) {
+      if (now - last >= SWAP_MS) { last = now; batch(now); }
+      twinkle(now);
+    }
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+})();
+</script>
+
+<!-- HOME REDESIGN: hero parallax scroll sequence (versioned in strawberryjohn/zios_website: webflow/custom-code/home-hero-parallax.js) -->
+<script>
+(function () {
+  function loadScript(src) {
+    return new Promise(function (resolve, reject) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.onload = resolve;
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+
+  function ensureGsap() {
+    var chain = Promise.resolve();
+    if (typeof window.gsap === 'undefined') {
+      chain = chain.then(function () { return loadScript('https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js'); });
+    }
+    return chain.then(function () {
+      if (typeof window.ScrollTrigger === 'undefined') {
+        return loadScript('https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js');
+      }
+    });
+  }
+
+  function init() {
+    var sec = document.querySelector('.hero_sec');
+    if (!sec || !sec.querySelector('.hero_layers')) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    gsap.registerPlugin(ScrollTrigger);
+
+    function layer(n) { return sec.querySelector('.hero_layer.is-' + n); }
+    var top = [sec.querySelector('.hero_head'), sec.querySelector('.button-wr.is-hero')].filter(Boolean);
+    var bottom = sec.querySelector('.hero_bottom');
+    var text = sec.querySelector('.hero_text');
+
+    // Offset that puts hero_bottom's centre on the hero's centre, measured with
+    // the text at its final 24px size and without the current transform.
+    function centreOffset() {
+      var tx = gsap.getProperty(bottom, 'x');
+      var ty = gsap.getProperty(bottom, 'y');
+      var prev = text.style.fontSize;
+      text.style.fontSize = '1.5rem';
+      var b = bottom.getBoundingClientRect();
+      var s = sec.getBoundingClientRect();
+      text.style.fontSize = prev;
+      return {
+        x: (s.left + s.width / 2) - (b.left - tx + b.width / 2),
+        y: (s.top + s.height / 2) - (b.top - ty + b.height / 2)
+      };
+    }
+
+    var tl = gsap.timeline({
+      defaults: { ease: 'none' },
+      scrollTrigger: {
+        trigger: sec,
+        start: 'top top',
+        end: '+=200%',
+        pin: true,
+        scrub: 0.6,
+        invalidateOnRefresh: true
+      }
+    });
+
+    // Mountains: same duration, different distances = parallax.
+    tl.to(layer(1), { yPercent: -160, duration: 0.75 }, 0)
+      .to(layer(2), { yPercent: -140, duration: 0.75 }, 0)
+      // Dark blue ground under layer 2 rises glued to it, so the gap below the mountains is dark blue, not sky.
+      .to(sec.querySelector('.hero_layer.is-ground'), { y: function () { return -sec.clientHeight * 1.4; }, duration: 0.75 }, 0)
+      .to(layer(3), { yPercent: -125, duration: 0.75 }, 0)
+      .to(layer(4), { yPercent: -110, duration: 0.75 }, 0)
+      .to(layer(5), { yPercent: -50, duration: 0.75 }, 0)
+      .to(layer(5), { autoAlpha: 0, duration: 0.4 }, 0.35)
+      // Heading + CTA move with the mountain they sit on (layer 2's speed).
+      .to(top, { y: function () { return -sec.clientHeight * 1.4; }, duration: 0.75 }, 0)
+      // Bottom group: to the centre, text 16 -> 24px.
+      .to(bottom, {
+        x: function () { return centreOffset().x; },
+        y: function () { return centreOffset().y; },
+        duration: 0.6,
+        ease: 'power1.inOut'
+      }, 0.15)
+      .to(text, { fontSize: '1.5rem', duration: 0.6, ease: 'power1.inOut' }, 0.15)
+      .to({}, { duration: 0.25 });
+  }
+
+  window.addEventListener('load', function () {
+    ensureGsap().then(init).catch(function (e) { console.warn('Hero parallax skipped:', e); });
+  });
+})();
+</script>

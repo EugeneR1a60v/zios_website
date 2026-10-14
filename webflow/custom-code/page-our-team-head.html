@@ -1,0 +1,21 @@
+<!-- OUR TEAM & CAREERS REDESIGN (versioned in strawberryjohn/zios_website: webflow/custom-code/page-our-team-head.html) -->
+<script>
+// Hide reveal targets before first paint; team-reveal.js (page footer) hands
+// them to GSAP and removes the class. Skipped for reduced motion.
+if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('team-reveal');
+</script>
+<style>
+html.team-reveal [data-reveal],
+html.team-reveal [data-reveal-item],
+html.team-reveal [data-reveal-img],
+html.team-reveal [data-reveal-line] { visibility: hidden; }
+/* Hero CTA: 3rem between caption and arrow (text padding 2.5rem + the button's 0.5rem gap); other Button Primary instances keep 1.5rem. */
+.teamhero_btn_wr .button_primary_text { padding-right: 2.5rem; }
+/* Leadership card: photo eases in on hover (parent hover can't be set on a class in the Designer). */
+@media (hover: hover) {
+  .execs_card:hover .execs_card_visual { transform: scale(1.04); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .execs_card_visual, .jobs_row { transition: none; }
+}
+</style>

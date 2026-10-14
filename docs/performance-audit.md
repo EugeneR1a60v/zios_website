@@ -13,19 +13,35 @@ There are no measured Lighthouse or Core Web Vitals numbers yet. The live site (
 
 | # | Fix | Pages | Impact | Effort | Where |
 |---|---|---|---|---|---|
-| 1 | Compress the Capabilities hero JPEGs (1.44 MB + 0.47 MB) and the founder PNG (0.61 MB) to AVIF | Cap, Team | **High** (LCP) | 10 min | Webflow assets |
+| 1 | ~~Compress the Capabilities hero JPEGs (1.44 MB + 0.47 MB) and the founder PNG (0.61 MB) to AVIF~~ **Done 2026-10-14**, see below | Cap, Team | **High** (LCP) | 10 min | Webflow assets |
 | 2 | Stop hiding the hero heading until GSAP downloads | WWD, Cap, About, Team | **High** (LCP) | 1–2 h | Page custom code |
 | 3 | Load the Deep Chat bundle only when the chat is opened | All | **High** (JS) | 1 h | Site head |
-| 4 | Use one GSAP version, loaded once and cached | All | Medium | 1 h | Page custom code |
+| 4 | ~~Use one GSAP version, loaded once and cached~~ **Done 2026-10-14**: 3.15.0 in the site footer | All | Medium | 1 h | Page custom code |
 | 5 | Move the 25–40 KB of inline page code into cached files | All | Medium | 2–3 h | Custom code / bundle |
 | 6 | Convert Regular and Light fonts from OTF to WOFF2; preload the body font | All | Medium | 30 min | Webflow fonts |
 | 7 | Make Swiper load only where it's used, and preconnect the third-party hosts | All | Medium | 30 min | Site code |
 | 8 | Delete the hidden legacy sections | Home, WWD, Cap, About, Team | Medium | 1 h | Designer |
-| 9 | Compress the large PNGs used by components and CTAs | Cap, WWD, About | Medium | 10 min | Webflow assets |
+| 9 | ~~Compress the large PNGs used by components and CTAs~~ **Done 2026-10-14** | Cap, WWD, About | Medium | 10 min | Webflow assets |
 | 10 | Clean up Home custom code (dead dev tunnels, old slider CSS) | Home | Low (also a safety fix) | 15 min | Page custom code |
 | 11 | Check: `#page-loader` overlay, `app.js` on non-Home pages, video/Rive usage | All | Unknown until verified | 30 min | Designer |
 
 Step 0: run PageSpeed Insights (mobile and desktop) on all five pages after the next publish and save the scores here as the baseline.
+
+## Progress
+
+**2026-10-14, images.** The 19 largest PNG/JPEG assets were converted in place to AVIF, with the same asset IDs. Together they went from **15.5 MB to 1.4 MB** (−91%).
+- Capabilities hero: 1.44 MB → 30 KB.
+- Hero texture: 482 KB → 15 KB.
+- Founder photo: 624 KB → 28 KB.
+- CTA handshake: 3.66 MB → 134 KB.
+
+`3.png` (`6a4e407a…`, 179 KB) was skipped because AVIF came out larger. Check the Capabilities hero for visible compression artefacts after publish. If it looks soft, re-upload it at higher quality.
+
+**2026-10-14, GSAP.** GSAP 3.15.0 (core, ScrollTrigger, SplitText) is loaded once in the site footer, and `cdn.jsdelivr.net` is preconnected in the site head.
+- Every page now uses the same cached files. Page scripts no longer wait on a second network round trip before revealing the hero (finding 2 is partly fixed).
+- The FAQ accordion now always finds `gsap`.
+
+Animation timings were aligned across pages, see `docs/motion-spec.md`. The live code is versioned in `webflow/custom-code/`.
 
 ## Details
 
