@@ -108,11 +108,6 @@
   .reviews_card_hover { transition: none; }
 }
 </style>
-<!-- News slider: arrows are Webflow elements (.news_arrow_svg in the News component); only cursor + focus ring here (home-news.css) -->
-<style>
-.news_swiper_nav .swiper-button { cursor: pointer; }
-.news_swiper_nav .swiper-button:focus-visible { outline: 2px solid var(--swatch--blue-100); outline-offset: 2px; }
-</style>
 <!-- HOME TABLET FIXES 768-991 (versioned in webflow/custom-code/home-tablet.css + home-tablet-greetings.js) -->
 <style>
 /* Home: tablet layout fixes (768-991px), page head custom code.
@@ -123,8 +118,6 @@
   .aboutus_sec .aboutus_title { white-space: normal; }
   /* Über Zios: "Über Zios" link on the right edge of the section, not mid-section. */
   .aboutus_main_wr .aboutus_link_wr { grid-column: 1 / -1; justify-self: end; }
-  /* News: arrows + progress bar inside the side gutters (the slider itself still bleeds). */
-  .news_sec .m-nav { box-sizing: border-box; padding-left: var(--site--margin); padding-right: var(--site--margin); }
   /* Footer: big Zios logo flush with the right edge of the blue panel. */
   .footer_action_el.u-flex-horizontal-nowrap.u-justify-content-between { width: 100%; }
   .footer_logo_wrap { margin-left: auto; }

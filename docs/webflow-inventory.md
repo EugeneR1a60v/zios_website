@@ -112,6 +112,32 @@ Display 6 · H1 5.125→3 · H2 4.25→3 · H3 2.5→1.5 · H4 1.875→1 · H5 1
 - **Wrapper**: Section, Layout, Grid, Block, Content Wrapper, Button Wrapper
 - **Typography**: Typography Heading, Typography Paragraph, Typography Eyebrow, Typography Tag, Typography Plain
 - **Button**: Button Main, Button Primary, Button Secondary, Primary Button / Icon, Button / Text Link, Button Text, Button Text 2.0, Button Play, Button Close, Button / Show more, Swiper button
+
+### Standard action buttons (use these, don't style one-offs)
+
+Checked on the five live pages on 2026-10-14. Every filled action button is **Button Primary**; every arrow link is **Button / Text Link**.
+
+| Need | Component | Variant | Look |
+|---|---|---|---|
+| Main CTA on light or dark sections | Button Primary | **Light** (base) | blue-10 pill, blue-160 text, arrow |
+| Main CTA, fixed width (hero, service blocks) | Button Primary | **Light / Wide** | same, 13.75rem wide |
+| CTA on a blue gradient panel | Button Primary | **White** (new 2026-10-14) | white-100 pill, blue-130 text |
+| Secondary on blue | Button Primary | Small / OnBlue | translucent white pill |
+| "More …" link under a section | Button / Text Link | **Blue / Large** | blue-100, uppercase on desktop |
+| Inline link on dark panels | Button / Text Link | Light / Large, Light / Small | white |
+
+Size rules on `button_primary_element`: text 16px at every breakpoint (the 18px phone override is gone), min-height 2.75rem (44px tap target).
+
+Replaced one-offs:
+- What we do Reinvention CTA: was a CSS recolour in the page head; now the White variant. The page-head rule is redundant and can be deleted.
+- About Us CTA: the custom `aboutcta_btn` link is hidden (Visible: off) and replaced by Button Primary / White inside a `data-ab-reveal` wrapper. Delete the hidden one once approved.
+- Our team hero: removed the extra caption padding (`.teamhero_btn_wr .button_primary_text`), so the arrow gap matches every other button.
+
+Still custom: the Home expertise "Learn More" links (`expert_link`, three colours per slide state), and the Capabilities `cando_tab` (a tab, not a button).
+
+### News / Section is one component everywhere
+
+Desktop comes from the component. Tablet and phone (≤991px) get arrows plus a 6s progress bar and the link below the slider, from **site-wide** custom code (`webflow/custom-code/news-slider.css` in the site head, `news-slider.js` in the site footer). The Home-only `HomeMobileNews` script is unapplied (still registered). `HomeMobileCss1` still carries identical news rules, which are harmless. Only the link text differs per page (German on Home, English elsewhere), as copy.
 - **Card**: Card Primary
 - **Interactive**: Accordion List, Accordion Item, Tab, Tab Link, Modal, Slider, Swiper
 - **Tabs**: Global Tabs / Styles, Tabs filter list / Tabs

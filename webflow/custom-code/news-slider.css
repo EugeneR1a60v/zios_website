@@ -1,0 +1,24 @@
+/* News / Section, every page: on tablet and phone (<=991px) the swiper dots/arrows give way to
+   arrows + a 6s progress bar under the cards (built by news-slider.js), and "More company news"
+   moves below the slider. Was Home-only (HomeMobileCss1 + home-tablet.css); site head custom code. */
+/* Desktop arrows (Webflow elements in the component): pointer + focus ring (was Home-only). */
+.news_swiper_nav .swiper-button { cursor: pointer; }
+.news_swiper_nav .swiper-button:focus-visible { outline: 2px solid var(--swatch--blue-100); outline-offset: 2px; }
+@media screen and (max-width: 991px) {
+  .news_sec .news_swiper_nav { display: none !important; }
+  .news_sec .g-swiper_layout { display: flex; flex-direction: column; }
+  .news_sec .new_head { order: 0; }
+  .news_sec .news_slider_component { order: 1; }
+  .news_sec .news_btn_wr { order: 2; margin-top: 2.5rem; }
+  .news_sec .m-nav { display: flex; align-items: center; gap: 1rem; margin-top: 1.5rem; box-sizing: border-box; }
+  .news_sec .m-nav_btn { display: flex; flex: none; justify-content: center; align-items: center; width: 2.75rem; height: 2.75rem; padding: 0; border: 1px solid currentColor; background: transparent; color: var(--swatch--blue-100); cursor: pointer; }
+  .news_sec .m-nav_btn svg { width: 1.5rem; height: 0.75rem; }
+  .news_sec .m-nav_btn.is-prev svg { transform: rotate(180deg); }
+  .news_sec .m-nav_btn:focus-visible { outline: 2px solid var(--swatch--blue-100); outline-offset: 2px; }
+  .news_sec .m-nav_bar { position: relative; flex: 1 1 0%; height: 2px; overflow: hidden; background-color: var(--swatch--blue-30); }
+  .news_sec .m-nav_fill { position: absolute; top: 0; bottom: 0; left: 0; width: 0; background-color: var(--swatch--blue-100); }
+}
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  /* The slider bleeds to the screen edge on tablet; keep the arrows inside the gutters. */
+  .news_sec .m-nav { padding-left: var(--site--margin); padding-right: var(--site--margin); }
+}
