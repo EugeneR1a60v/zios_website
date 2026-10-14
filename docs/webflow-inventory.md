@@ -126,12 +126,16 @@ Checked on the five live pages on 2026-10-14. Every filled action button is **Bu
 | "More …" link under a section | Button / Text Link | **Blue / Large** | blue-100, uppercase on desktop |
 | Inline link on dark panels | Button / Text Link | Light / Large, Light / Small | white |
 
-Size rules on `button_primary_element`: text 16px at every breakpoint (the 18px phone override is gone), min-height 2.75rem (44px tap target).
+Size rules (set on the component, so every page follows):
+- Text 16px at every breakpoint; min-height 2.75rem (44px tap target).
+- Caption to arrow gap: 48px from 768px up, 24px on phones. The arrow is absolutely positioned 1rem from the right edge, so the gap lives in `button_primary_text` padding-right: gap + 24px arrow + 16px inset − 20px button padding = 4.25rem / 2.75rem.
+- Phones (≤767px): full width of the container. Section wrappers that pinned a width (`button-wr.is-hero`, `greetings_btn_wr`, `wwdproducts_btn_wr`, `wwdreinvent_btn_wr`, `aboutcta_btn_wr`) stretch to 100% on phones. Exception: Small / OnBlue stays a compact pill.
+- Light / Wide is a minimum width (13.75rem), not a fixed one, so long captions keep the full gap.
 
 Replaced one-offs:
 - What we do Reinvention CTA: was a CSS recolour in the page head; now the White variant. The page-head rule is redundant and can be deleted.
-- About Us CTA: the custom `aboutcta_btn` link is hidden (Visible: off) and replaced by Button Primary / White inside a `data-ab-reveal` wrapper. Delete the hidden one once approved.
-- Our team hero: removed the extra caption padding (`.teamhero_btn_wr .button_primary_text`), so the arrow gap matches every other button.
+- About Us CTA: the custom `aboutcta_btn` link was replaced by Button Primary / White inside `aboutcta_btn_wr` (carries `data-ab-reveal`) and deleted. Its classes (`aboutcta_btn`, `aboutcta_btn_text`, `aboutcta_btn_icon`) are now unused.
+- Our team hero: removed the page-level caption padding; the component now sets the gap everywhere.
 
 Still custom: the Home expertise "Learn More" links (`expert_link`, three colours per slide state), and the Capabilities `cando_tab` (a tab, not a button).
 

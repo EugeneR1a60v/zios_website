@@ -134,3 +134,8 @@ The page-level scripts follow `docs/motion-spec.md`. Three **registered (hosted)
 `HomeHeroReveal` already matches the hero spec, and `HomeAboutCountUp` uses the same rolling curve as the other counters.
 
 `SectionReveal` is also fragile: it loads from `cdn.jsdelivr.net/gh/strawberryjohn/zios_website@…`. The repo has since moved to `EugeneR1a60v/zios_website`. Moving it into the page footer code (like the other page scripts) removes that dependency.
+
+## 6. Follow-ups fixed (2026-10-14, staged)
+
+- **About Us, Reinvention (phones):** the text group grew to its 534px paragraph and clipped the copy off-screen; `aboutcta_text_group` now has `max-width: 100%`. The section kept a 36rem min-height on phones, leaving ~220px of empty blue under the button; it now hugs the content with 5rem top and bottom.
+- **Button Primary:** arrow overlapped the caption (36px reserved for a 40px arrow + inset). Gap now 48px (≥768) / 24px (phones), full width on phones. Verified by injecting the staged CSS into the live pages: desktop gaps 48px or more on all 14 buttons; phones full container width; tablet 36px while the 12px root-font issue (section 1) remains.
