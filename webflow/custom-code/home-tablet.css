@@ -1,0 +1,14 @@
+/* Home: tablet layout fixes (768-991px), page head custom code.
+   Phones (<=767) are handled by the HomeMobileCss* registered scripts; nothing covered tablet. */
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  /* Über Zios: title above the intro text with real spacing (they overlapped). */
+  .aboutus_sec .aboutus_head { display: flex; flex-direction: column; align-items: flex-start; row-gap: 1.5rem; }
+  .aboutus_sec .aboutus_title { white-space: normal; }
+  /* Über Zios: "Über Zios" link on the right edge of the section, not mid-section. */
+  .aboutus_main_wr .aboutus_link_wr { grid-column: 1 / -1; justify-self: end; }
+  /* News: arrows + progress bar inside the side gutters (the slider itself still bleeds). */
+  .news_sec .m-nav { box-sizing: border-box; padding-left: var(--site--margin); padding-right: var(--site--margin); }
+  /* Footer: big Zios logo flush with the right edge of the blue panel. */
+  .footer_action_el.u-flex-horizontal-nowrap.u-justify-content-between { width: 100%; }
+  .footer_logo_wrap { margin-left: auto; }
+}
