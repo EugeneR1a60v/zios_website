@@ -25,12 +25,8 @@ Rules followed:
 
 1. **Language mismatch.** The site's primary locale is English (`en`), so pages render `<html lang="en">`. Home is in German and targets Austria ("österreichische Unternehmen", "Niederösterreich"). The other four pages are in English and read like template copy. Google ranks pages per language, and a German page marked `en` is a weak signal for Austrian search.
    - Decision needed: if the site is German-first, switch the primary locale to German (de-AT) and translate the four English pages. The meta tags for those pages should then be rewritten in German.
-2. **Duplicate H1s.** These look like legacy hidden sections that are still in the DOM. Hidden elements are still crawled.
-   - What we do: `wwdhero_heading` and `hero_heading` (both "Rethink what your business can become.").
-   - About Us: `abouthero_heading` and `g-hero-heading`.
-   - Our team & careers: `teamhero_heading` and `team_hero_heading_title` ("Daniel Zinner").
-   - Home and Capabilities have one H1 each.
-3. **Hidden legacy sections duplicate content.**
+2. ~~**Duplicate H1s.**~~ *Corrected 2026-10-14:* the second H1 on What we do, About Us and Our team & careers sits in legacy sections set to "Visible: off". Webflow doesn't render those, so each published page has a single H1.
+3. **Hidden legacy sections** are set to "Visible: off", so they are *not* in the published HTML and don't duplicate content. They only add Designer clutter.
    - About Us has the stats and the timeline twice.
    - What we do has "What we do" and "Core Industries We Serve" twice each.
    - Capabilities has a hidden "What can you do" block containing lorem ipsum.
