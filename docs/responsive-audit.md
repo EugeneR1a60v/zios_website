@@ -2,7 +2,7 @@
 
 Pages: Home, What we do, Capabilities - Cybersecurity, About Us, and Our team & careers.
 
-**Status: static pass done; visual pass pending.** This pass covers what can be read from Webflow without a browser:
+**Status: static pass and rendered pass done (2026-10-14).** This pass covers what can be read from Webflow without a browser:
 - every class's breakpoint styles (tablet ≤991, mobile landscape ≤767, mobile portrait ≤479);
 - the CSS in components and custom code;
 - the animation scripts.
@@ -87,12 +87,50 @@ html { font-size: clamp(0.75rem, calc(100vw / 1370 * 16), 1rem); }
   - The ASCII canvases pause off-screen.
 - **Duplicate H1s are not in the published HTML.** The second hero on WWD, About and Team sits in sections set to "Visible: off", which Webflow doesn't render. *(This corrects SEO audit item 2.)*
 
-## 5. Rendered pass, once network access is allowed
+## 5. Rendered pass (headless Chromium, live site)
 
-For each of the five pages, at 1024, 991, 768, 767, 479, 375 and 320 px (headless Chromium):
-1. Full-page screenshots, compared against the Figma desktop frames for content parity.
-2. Horizontal overflow check: `document.documentElement.scrollWidth > innerWidth`, plus the offending elements.
-3. Computed font size of every text node, flagging anything under 16px that isn't a label (12px).
-4. Tap targets under 44×44px.
-5. Hero reveal, rolling numbers, sliders and accordion exercised by scripting scroll and clicks, with a check for console errors.
-6. Then apply fix 1 on a staging branch and re-run steps 1–3 at tablet widths before publishing.
+Each page was loaded at 1440 / 1024 / 768 / 600 / 375 / 320 px and scrolled through to fire every reveal, then measured.
+- Screenshots: `docs/responsive-audit/*.jpg`.
+- Raw numbers: `measurements.json`.
+- Harness: `audit-harness.js`.
+
+**Fidelity notes:**
+- The blocked CDNs (GSAP, Swiper, jQuery, Deep Chat, the repo-hosted `section-reveal.js`) were served from identical npm/git copies.
+- Home's external `app.js` / `app.css` (Netlify) couldn't be loaded, so Home renders without that layer. Re-check Home once `zios-webflow.netlify.app` is allowed.
+
+### Confirmed
+
+| Check | Result |
+|---|---|
+| Root font size | 1024 and 768: **12px on all five pages**; 600: 12px on Home, 16px elsewhere; 375: 16px; 320: 13.7px. Tablet body text is 12px and the tablet H1 48px (spec 64). Finding 1 is confirmed. |
+| Horizontal overflow | None, at any width, on any page. |
+| Animations | Every reveal target is visible after scrolling (no stuck elements), GSAP 3.15.0 and Swiper load on every page, and there are no JS errors. Home's two errors are the blocked bundle. |
+| Phone text sizes (375) | Everything is ≥16px except labels (12px) and Home's hero intro `.hero_text`, which is **14px**. |
+| **Root-font fix, tested** | With `html{font-size:clamp(14px, 100vw/1370*16, 16px)}` plus 16px at ≤991, all five pages stay overflow-free at 1100 / 1024 / 768 / 600. The only visual casualty seen: the large footer "Zios" wordmark clips at 768 (`*-768-with-root-fix.jpg`). It needs a % or vw width. |
+
+### New findings from the screenshots
+
+| # | Severity | Issue | Page / width | Fix |
+|---|---|---|---|---|
+| R1 | High | **About CTA text is cut off.** "From tech to AI, we help clients rethink and rebu…" runs past the panel at 375 and is clipped. | About Us, ≤479 | Give `.aboutcta_text` `width: 100%` on mobile (its 33.375rem desktop width wins over `max-width` inside the flex panel). |
+| R2 | High | **Placeholder content is live:** the FAQ shows "AMET SIT" and "LOREM DO" questions, and every item is numbered **[00]**. | What we do, Cybersecurity | Replace or remove the lorem FAQ items in the CMS; fix the numbering (Home numbers correctly). |
+| R3 | High | **Placeholder team bios are live:** every executive card says "Position" and "A few words about him and his background… Not more please." | Our team & careers | Fill in the Team CMS items (role and bio) or hide the section until ready. |
+| R4 | Medium | **Headings are forced into title case** with `text-transform: capitalize`. In German that's wrong: "Ihr Partner **Für** Sichere **Digitale** Infrastruktur", "Was **Unsere** Kunden **Über** Zios Sagen", "IT **Von** Morgen", "Mehr **Erfahren**". It's also inconsistent in English ("News And Insights"). | All pages | Remove `capitalize` from the heading styles and write the copy in the right case. |
+| R5 | Medium | **Tap targets under 44×44px at phone width:**<br>• text links, 21px tall<br>• footer links, 33–36px<br>• FAQ toggles, 38px<br>• slider arrows, 32px<br>• slider dots, 8px<br>• LinkedIn icons, 24px<br>• logo, 40×15 (65×25 on Home) | All pages | Add vertical padding to links and toggles, make arrows 44px, give dots a larger invisible hit area. Make the logo the same size on all pages. |
+| R6 | Medium | **Home tablet:** the "Zios Hosting" card title collides with its button, and the Über Zios intro text sits cramped under the title (at a 12px root, and without app.css). | Home, 768 | Re-check after the root fix and with the bundle loaded. |
+| R7 | Low | Home hero on phones: large empty band between the CTA and the intro text, which is small (14px) and centred low. The cookie banner covers most of the first screen. | Home, 375 | Tighten the hero on mobile; use 16px intro text; make the cookie banner more compact. |
+| R8 | Low | Nav logo has low contrast on the Cybersecurity hero (white logo on a light image). | Cybersecurity, 375 | Darken the top of the hero image or add a scrim. |
+
+### Animation timing outside the motion spec (hosted scripts)
+
+The page-level scripts follow `docs/motion-spec.md`. Three **registered (hosted) scripts** that I didn't touch in the alignment pass differ slightly:
+
+| Script | Pages | Now | Spec |
+|---|---|---|---|
+| `SectionReveal` (jsDelivr, pinned to commit `2b741df`) | What we do, Cybersecurity | y 40, 0.9s, stagger 0.15, trigger −20% | y 32, 0.8s, stagger 0.1, trigger 85% |
+| `HomeReviewsReveal` | Home | 1.1s, stagger 0.15, top 88% | 0.8s, 0.1, 85% |
+| `wwdCoreIndustriesReveal` | What we do | 0.8 / 1s, stagger 0.05–0.08, 85% | close enough |
+
+`HomeHeroReveal` already matches the hero spec, and `HomeAboutCountUp` uses the same rolling curve as the other counters.
+
+`SectionReveal` is also fragile: it loads from `cdn.jsdelivr.net/gh/strawberryjohn/zios_website@…`. The repo has since moved to `EugeneR1a60v/zios_website`. Moving it into the page footer code (like the other page scripts) removes that dependency.
