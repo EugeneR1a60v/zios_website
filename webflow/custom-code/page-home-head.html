@@ -22,6 +22,23 @@
 .gradient_wrap .partners_sec { background-color: #012462; }
 .gradient_wrap .partners_overlay { background: linear-gradient(90deg, #012462 0%, rgba(1, 36, 98, 0) 12%, rgba(1, 36, 98, 0) 88%, #012462 100%); }
 </style>
+<!-- Über Zios (home-about.css) -->
+<style>
+.aboutus_main_wr .aboutus_number { display: inline-block; background-image: linear-gradient(87deg, var(--swatch--white-100) 9.7%, var(--swatch--blue-100) 99%); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
+@media screen and (min-width: 992px) {
+  .aboutus_main_wr .aboutus_layout { height: 100%; min-height: 33.25rem; align-content: space-between; }
+  .aboutus_main_wr .aboutus_number_wr { grid-column: 1 / -2; align-self: end; }
+  .aboutus_main_wr .aboutus_link_wr { grid-column: -2 / -1; justify-self: end; align-self: end; display: flex; justify-content: flex-end; padding-right: 0; margin-left: auto; }
+}
+.aboutus_loader { position: relative; border: 0.1875rem solid rgba(123, 186, 255, 0.25); border-top-color: var(--swatch--blue-60); animation: aboutus-loader 1.6s linear infinite; }
+@keyframes aboutus-loader { to { transform: rotate(360deg); } }
+@media screen and (max-width: 767px) {
+  .aboutus_loader { width: 1.5rem; height: 1.5rem; border-width: 0.125rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .aboutus_loader { animation-duration: 6s; }
+}
+</style>
 <style>
 @keyframes services-marquee { from { background-position-x: 1rem; } to { background-position-x: 3.3125rem; } }
 .services_card_strip { animation: services-marquee 1.6s linear infinite; }
@@ -33,9 +50,9 @@
   .services_card_inner { transition: none; }
 }
 </style>
+<!-- Old expertise slider (section hidden; kept until v3 is approved) -->
 <style>
 .expertise_sec {
-  /* card = content container width (max 1920px minus gutters), never taller than the viewport */
   --exp-cw: min(var(--max-width--main), 100vw - var(--site--margin) * 2);
   --exp-sw: min(var(--exp-cw), calc(100svh * 1322 / 784));
   overflow: clip;
@@ -76,3 +93,65 @@
   .expertise_sec .tab_button_item.is-active .tab_button_line { animation: none; width: 100%; }
 }
 </style>
+<!-- Reviews: static 3 cards, cut corner, gradient + hover (home-reviews.css) -->
+<style>
+.reviews_card_bg { clip-path: polygon(0 0, calc(100% - 3.5625rem) 0, 100% 3.5625rem, 100% 100%, 0 100%); }
+.reviews_card_fill { clip-path: polygon(0 0, calc(100% - 3.4625rem) 0, 100% 3.4625rem, 100% 100%, 0 100%); background-image: linear-gradient(90deg, var(--swatch--blue-30) 0%, color-mix(in srgb, var(--swatch--blue-30) 30%, var(--swatch--blue-10)) 87%); }
+.reviews_card_hover { background-image: linear-gradient(115deg, color-mix(in srgb, var(--swatch--blue-60) 55%, transparent) 0%, color-mix(in srgb, var(--swatch--blue-60) 0%, transparent) 70%); transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+@media (hover: hover) {
+  .reviews_card:hover .reviews_card_hover { opacity: 1; }
+}
+.reviews_card:focus-within .reviews_card_hover { opacity: 1; }
+.reviews_card_text::before { content: "\201C"; }
+.reviews_card_text::after { content: "\201D"; }
+@media (prefers-reduced-motion: reduce) {
+  .reviews_card_hover { transition: none; }
+}
+</style>
+<!-- HOME TABLET FIXES 768-991 (versioned in webflow/custom-code/home-tablet.css + home-tablet-greetings.js) -->
+<style>
+/* Home: tablet layout fixes (768-991px), page head custom code.
+   Phones (<=767) are handled by the HomeMobileCss* registered scripts; nothing covered tablet. */
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  /* Über Zios: title above the intro text with real spacing (they overlapped). */
+  .aboutus_sec .aboutus_head { display: flex; flex-direction: column; align-items: flex-start; row-gap: 1.5rem; }
+  .aboutus_sec .aboutus_title { white-space: normal; }
+  /* Über Zios: "Über Zios" link on the right edge of the section, not mid-section. */
+  .aboutus_main_wr .aboutus_link_wr { grid-column: 1 / -1; justify-self: end; }
+  /* Footer: big Zios logo flush with the right edge of the blue panel. */
+  .footer_action_el.u-flex-horizontal-nowrap.u-justify-content-between { width: 100%; }
+  .footer_logo_wrap { margin-left: auto; }
+}
+</style>
+<script>
+// Home "Aus Österreich" section, tablet (768-991px): the map's pin and "Austria" label
+// landed on the heading, and the first card hid the label. Move the map down until the pin
+// clears the heading, then push the cards below the label. Measured, so it holds at any
+// root font size. Phones have their own version (HomeMobileSections); this only touches
+// what it set itself. Lives in the Home page head custom code (runs on load).
+(function () {
+  var mq = window.matchMedia('(min-width: 768px) and (max-width: 991px)');
+  var PIN_ABOVE_LABEL = 90; // the pin graphic sits up to ~90px above the label's top edge
+  var set = false;
+
+  function fit() {
+    var g = document.querySelector('.greetings_sec');
+    var inner = g && g.querySelector('.greetings_map_inner');
+    var label = g && g.querySelector('.greetings_map_label');
+    var head = g && g.querySelector('.greetings_head');
+    var lay = g && g.querySelector('.greetings_layout');
+    if (!inner || !label || !head || !lay) return;
+    if (set) { inner.style.top = ''; head.style.marginBottom = ''; set = false; }
+    if (!mq.matches) return;
+    var shift = head.getBoundingClientRect().bottom + PIN_ABOVE_LABEL - label.getBoundingClientRect().top;
+    if (shift > 0) inner.style.top = (parseFloat(getComputedStyle(inner).top) + shift) + 'px';
+    var need = label.getBoundingClientRect().bottom + 32 - lay.getBoundingClientRect().top;
+    if (need > 0) head.style.marginBottom = (parseFloat(getComputedStyle(head).marginBottom) + need) + 'px';
+    set = shift > 0 || need > 0;
+  }
+
+  if (document.readyState === 'complete') fit(); else window.addEventListener('load', fit);
+  var t;
+  window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(fit, 150); });
+})();
+</script>

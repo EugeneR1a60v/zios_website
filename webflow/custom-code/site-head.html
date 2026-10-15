@@ -1,0 +1,138 @@
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+<!-- Finsweet Attributes -->
+<script async type="module"
+src="https://cdn.jsdelivr.net/npm/@finsweet/attributes@2/attributes.js"
+fs-scrolldisable
+></script>
+<!-- Deep chat  -->
+<script type="module" src="https://unpkg.com/deep-chat@2.4.2/dist/deepChat.bundle.js"></script>
+<!-- SWIPER STYLES  -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css">
+
+
+<style>
+.char {
+  display: inline-block;
+  text-transform: inherit !important;;
+}
+
+#particle-container {
+  position: relative;
+  z-index: 10;
+}
+#particle-container canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.swiper-button[disabled]{
+  opacity: 0.3;
+  pointer-events: none;
+}
+.swiper.news .swiper-slide {
+  margin-right: 2.25rem; 
+}
+.swiper.news .swiper-slide:last-child {
+  margin-right: 0;
+}
+</style>
+
+<style>
+  #page-loader {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+  }
+
+  #page-loader.hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .loader {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    position: relative;
+    animation: rotate 1s linear infinite;
+  }
+
+  .loader::before {
+    content: "";
+    box-sizing: border-box;
+    position: absolute;
+    inset: 0px;
+    border-radius: 50%;
+    border: 5px solid #FFF;
+    animation: prixClipFix 2s linear infinite;
+  }
+
+  @keyframes rotate {
+    100% { transform: rotate(360deg); }
+  }
+
+  @keyframes prixClipFix {
+    0%   { clip-path: polygon(50% 50%, 0 0, 0 0, 0 0, 0 0, 0 0); }
+    25%  { clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 0, 100% 0, 100% 0); }
+    50%  { clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 100% 100%, 100% 100%); }
+    75%  { clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 100%); }
+    100% { clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 0); }
+  }
+</style>
+
+<!-- Accordion styles -->
+<style>
+.wf-design-mode .accordion_content_wrap {
+	display: block;
+}
+@media(width>991px){
+  .accordion_item:hover button[aria-expanded="false"] .accordion_toggle_icon{
+    transform: rotate(90deg);
+  }
+}
+button[aria-expanded="true"] .accordion_toggle_icon{
+  transform: rotate(135deg);
+}
+button[aria-expanded="true"] .accordion_toggle_text,
+button[aria-expanded="true"] .accordion_card_number_el{
+  color: var(--swatch--blue-100);
+}
+</style>
+
+<script>
+//LOADER SCRIPT
+</script>
+
+<!-- NEWS SLIDER: tablet/phone layout for News / Section (webflow/custom-code/news-slider.css) -->
+<style>
+/* News / Section, every page: on tablet and phone (<=991px) the swiper dots/arrows give way to
+   arrows + a 6s progress bar under the cards (built by news-slider.js), and "More company news"
+   moves below the slider. Was Home-only (HomeMobileCss1 + home-tablet.css); site head custom code. */
+/* Desktop arrows (Webflow elements in the component): pointer + focus ring (was Home-only). */
+.news_swiper_nav .swiper-button { cursor: pointer; }
+.news_swiper_nav .swiper-button:focus-visible { outline: 2px solid var(--swatch--blue-100); outline-offset: 2px; }
+@media screen and (max-width: 991px) {
+  .news_sec .news_swiper_nav { display: none !important; }
+  .news_sec .g-swiper_layout { display: flex; flex-direction: column; }
+  .news_sec .new_head { order: 0; }
+  .news_sec .news_slider_component { order: 1; }
+  .news_sec .news_btn_wr { order: 2; margin-top: 2.5rem; }
+  .news_sec .m-nav { display: flex; align-items: center; gap: 1rem; margin-top: 1.5rem; box-sizing: border-box; }
+  .news_sec .m-nav_btn { display: flex; flex: none; justify-content: center; align-items: center; width: 2.75rem; height: 2.75rem; padding: 0; border: 1px solid currentColor; background: transparent; color: var(--swatch--blue-100); cursor: pointer; }
+  .news_sec .m-nav_btn svg { width: 1.5rem; height: 0.75rem; }
+  .news_sec .m-nav_btn.is-prev svg { transform: rotate(180deg); }
+  .news_sec .m-nav_btn:focus-visible { outline: 2px solid var(--swatch--blue-100); outline-offset: 2px; }
+  .news_sec .m-nav_bar { position: relative; flex: 1 1 0%; height: 2px; overflow: hidden; background-color: var(--swatch--blue-30); }
+  .news_sec .m-nav_fill { position: absolute; top: 0; bottom: 0; left: 0; width: 0; background-color: var(--swatch--blue-100); }
+}
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  /* The slider bleeds to the screen edge on tablet; keep the arrows inside the gutters. */
+  .news_sec .m-nav { padding-left: var(--site--margin); padding-right: var(--site--margin); }
+}
+</style>

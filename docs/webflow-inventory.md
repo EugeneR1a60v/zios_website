@@ -112,6 +112,36 @@ Display 6 · H1 5.125→3 · H2 4.25→3 · H3 2.5→1.5 · H4 1.875→1 · H5 1
 - **Wrapper**: Section, Layout, Grid, Block, Content Wrapper, Button Wrapper
 - **Typography**: Typography Heading, Typography Paragraph, Typography Eyebrow, Typography Tag, Typography Plain
 - **Button**: Button Main, Button Primary, Button Secondary, Primary Button / Icon, Button / Text Link, Button Text, Button Text 2.0, Button Play, Button Close, Button / Show more, Swiper button
+
+### Standard action buttons (use these, don't style one-offs)
+
+Checked on the five live pages on 2026-10-14. Every filled action button is **Button Primary**; every arrow link is **Button / Text Link**.
+
+| Need | Component | Variant | Look |
+|---|---|---|---|
+| Main CTA on light or dark sections | Button Primary | **Light** (base) | blue-10 pill, blue-160 text, arrow |
+| Main CTA, fixed width (hero, service blocks) | Button Primary | **Light / Wide** | same, 13.75rem wide |
+| CTA on a blue gradient panel | Button Primary | **White** (new 2026-10-14) | white-100 pill, blue-130 text |
+| Secondary on blue | Button Primary | Small / OnBlue | translucent white pill |
+| "More …" link under a section | Button / Text Link | **Blue / Large** | blue-100, uppercase on desktop |
+| Inline link on dark panels | Button / Text Link | Light / Large, Light / Small | white |
+
+Size rules (set on the component, so every page follows):
+- Text 16px at every breakpoint; min-height 2.75rem (44px tap target).
+- Caption to arrow gap: 48px from 768px up, 24px on phones. The arrow is absolutely positioned 1rem from the right edge, so the gap lives in `button_primary_text` padding-right: gap + 24px arrow + 16px inset − 20px button padding = 4.25rem / 2.75rem.
+- Phones (≤767px): full width of the container. Section wrappers that pinned a width (`button-wr.is-hero`, `greetings_btn_wr`, `wwdproducts_btn_wr`, `wwdreinvent_btn_wr`, `aboutcta_btn_wr`) stretch to 100% on phones. Exception: Small / OnBlue stays a compact pill.
+- Light / Wide is a minimum width (13.75rem), not a fixed one, so long captions keep the full gap.
+
+Replaced one-offs:
+- What we do Reinvention CTA: was a CSS recolour in the page head; now the White variant. The page-head rule is redundant and can be deleted.
+- About Us CTA: the custom `aboutcta_btn` link was replaced by Button Primary / White inside `aboutcta_btn_wr` (carries `data-ab-reveal`) and deleted. Its classes (`aboutcta_btn`, `aboutcta_btn_text`, `aboutcta_btn_icon`) are now unused.
+- Our team hero: removed the page-level caption padding; the component now sets the gap everywhere.
+
+Still custom: the Home expertise "Learn More" links (`expert_link`, three colours per slide state), and the Capabilities `cando_tab` (a tab, not a button).
+
+### News / Section is one component everywhere
+
+Desktop comes from the component. Tablet and phone (≤991px) get arrows plus a 6s progress bar and the link below the slider, from **site-wide** custom code (`webflow/custom-code/news-slider.css` in the site head, `news-slider.js` in the site footer). The Home-only `HomeMobileNews` script is unapplied (still registered). `HomeMobileCss1` still carries identical news rules, which are harmless. Only the link text differs per page (German on Home, English elsewhere), as copy.
 - **Card**: Card Primary
 - **Interactive**: Accordion List, Accordion Item, Tab, Tab Link, Modal, Slider, Swiper
 - **Tabs**: Global Tabs / Styles, Tabs filter list / Tabs
