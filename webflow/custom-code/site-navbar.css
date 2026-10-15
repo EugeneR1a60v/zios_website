@@ -1,0 +1,30 @@
+/* Opening the mega menu locks page scroll (the external app.js bundle does that). Without a reserved
+   gutter the scrollbar disappears and the whole page jumps sideways by its width. Keeping the gutter
+   reserved means the lock no longer moves anything. Root overflow clip/hidden both count as hidden
+   for the viewport, so this holds whichever way the bundle locks. */
+html { scrollbar-gutter: stable; }
+
+/* Progressive blur behind the navbar (layers injected by site-navbar.js). Each layer blurs twice as
+   much as the one below it and is masked to its own band, so the blur builds up towards the top
+   edge and fades out smoothly underneath the buttons. */
+.nav_blur { position: absolute; top: 0; left: 0; right: 0; z-index: -1; height: 7rem; pointer-events: none; }
+.nav_blur > div { position: absolute; inset: 0; }
+.nav_blur > div:nth-child(1) { -webkit-backdrop-filter: blur(0.5px); backdrop-filter: blur(0.5px); -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 14%, #000 29%, transparent 43%); mask-image: linear-gradient(to top, transparent 0%, #000 14%, #000 29%, transparent 43%); }
+.nav_blur > div:nth-child(2) { -webkit-backdrop-filter: blur(1px); backdrop-filter: blur(1px); -webkit-mask-image: linear-gradient(to top, transparent 14%, #000 29%, #000 43%, transparent 57%); mask-image: linear-gradient(to top, transparent 14%, #000 29%, #000 43%, transparent 57%); }
+.nav_blur > div:nth-child(3) { -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); -webkit-mask-image: linear-gradient(to top, transparent 29%, #000 43%, #000 57%, transparent 71%); mask-image: linear-gradient(to top, transparent 29%, #000 43%, #000 57%, transparent 71%); }
+.nav_blur > div:nth-child(4) { -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); -webkit-mask-image: linear-gradient(to top, transparent 43%, #000 57%, #000 71%, transparent 86%); mask-image: linear-gradient(to top, transparent 43%, #000 57%, #000 71%, transparent 86%); }
+.nav_blur > div:nth-child(5) { -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); -webkit-mask-image: linear-gradient(to top, transparent 57%, #000 71%, #000 86%, transparent 100%); mask-image: linear-gradient(to top, transparent 57%, #000 71%, #000 86%, transparent 100%); }
+.nav_blur > div:nth-child(6) { -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); -webkit-mask-image: linear-gradient(to top, transparent 71%, #000 86%); mask-image: linear-gradient(to top, transparent 71%, #000 86%); }
+
+/* Mega menu (desktop). site-navbar.js adds html.nav-mm and drives the panels with GSAP: one white
+   background morphs between the dropdowns' sizes while their content cross-slides. Webflow still owns
+   open/close (hover delay, keyboard, aria); the script only follows its w--open class. The lists stay
+   rendered so their size can be measured, and the per-dropdown IX2 fade is neutralised so it can't
+   fight the GSAP timeline. Without JS none of this applies and the menu works as before. */
+.nav_mm_bg { display: none; }
+@media screen and (min-width: 992px) {
+  html.nav-mm .nav_menu_dd_list { display: block !important; opacity: 1 !important; transform: none !important; pointer-events: none; }
+  html.nav-mm .nav_menu_dd_list.w--open { pointer-events: auto; }
+  html.nav-mm .nav_menu_dd_layout { background-color: transparent; visibility: hidden; opacity: 0; }
+  html.nav-mm .nav_mm_bg { display: block; position: absolute; top: 0; left: 0; z-index: -1; visibility: hidden; opacity: 0; background-color: var(--swatch--white-100); pointer-events: none; will-change: transform, width, height; }
+}
