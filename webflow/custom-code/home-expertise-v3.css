@@ -1,30 +1,39 @@
-/* Expertise slider v3 (Home), rebuilt from Figma 10119:14288.
-   Classes live in Webflow (expert_*); this block adds the fluid geometry and
-   per-slide colour themes. Lives in the Home page head. */
+<style>
+/* CSS · Expertise (expert_sec). Lives in an HTML embed inside the section, so the
+   Designer renders it too. Classes live in Webflow (expert_*); this adds the fluid
+   geometry, Swiper's base layout and the per-slide colour themes. Figma 10119:14288.
+   Source: strawberryjohn/zios_website webflow/custom-code/home-expertise-v3.css */
 .expert_sec {
-  /* content container: max 1920px, site gutter below that */
   --exp-cw: min(var(--max-width--main), 100vw - var(--site--margin) * 2);
-  /* active slide = container minus one gap each side (neighbours peek in the
-     gutter), 1322:784 ratio, never taller than the viewport */
   --exp-gap: 1.5rem;
-  --exp-sw: min(calc(var(--exp-cw) - var(--exp-gap) * 2), calc(100svh * 1322 / 784));
+  --exp-pad: 6.25rem;
+  /* active slide = container minus one gap each side (neighbours peek in the gutter) */
+  --exp-sw: calc(var(--exp-cw) - var(--exp-gap) * 2);
+  /* 1322:784 where there's room; on shorter screens the slide gets wider than that
+     instead of taller, so the whole section (padding + slide) fits the viewport */
+  --exp-sh: min(calc(var(--exp-sw) * 784 / 1322), calc(100svh - var(--exp-pad) * 2 - 2rem));
+  padding-top: var(--exp-pad);
+  padding-bottom: var(--exp-pad);
   overflow: clip;
 }
+@media screen and (min-width: 768px) and (max-height: 960px) {
+  .expert_sec { --exp-pad: 4rem; }
+}
 .expert_sec .expert_swiper { width: 100%; overflow: hidden; }
-.expert_sec .expert_slide { width: var(--exp-sw); height: auto; aspect-ratio: 1322 / 784; }
+.expert_sec .expert_wrapper { display: flex; }
+.expert_sec .expert_slide { flex-shrink: 0; width: var(--exp-sw); height: var(--exp-sh); }
+/* Before Swiper starts (Designer, no-JS, first paint): slide 1 centred, neighbours one gap away. */
+.expert_sec .expert_swiper:not(.swiper-initialized) .expert_wrapper { gap: var(--exp-gap); transform: translateX(calc(50% - var(--exp-sw) / 2)); }
 .expert_sec .expert_tabs { width: var(--exp-sw); transform: translateX(-50%); }
 .expert_sec .expert_tab_text { font-size: var(--_typography---font-size--h6); }
 .expert_sec .expert_nav { transform: translateY(-50%); }
 .expert_sec .expert_nav.is-prev { left: calc(50% - var(--exp-sw) / 2 - 1.5rem); }
 .expert_sec .expert_nav.is-next { right: calc(50% - var(--exp-sw) / 2 - 1.5rem); }
-.expert_sec .expert_nav_icon {
-  background: no-repeat center / contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 34 34' fill='none' stroke='%23071c33' stroke-width='1.5' stroke-linecap='square'%3E%3Cpath d='M6 17h21M22 12l5 5-5 5'/%3E%3C/svg%3E");
-}
+.expert_sec .expert_nav { color: var(--swatch--blue-180); }
+.expert_sec .expert_nav_icon { display: flex; align-items: center; justify-content: center; }
 .expert_sec .expert_nav.is-prev .expert_nav_icon { transform: rotate(180deg); }
 .expert_sec .expert_nav:focus-visible,
 .expert_sec .expert_tab:focus-visible { outline: 2px solid var(--swatch--blue-100); outline-offset: 2px; }
-
-/* Slide themes */
 .expert_sec .expert_slide.is-ki .expert_eyebrow,
 .expert_sec .expert_slide.is-ki .expert_text,
 .expert_sec .expert_slide.is-ki .expert_link { color: var(--swatch--white-100); }
@@ -33,14 +42,13 @@
 .expert_sec .expert_slide.is-nis2 .expert_eyebrow,
 .expert_sec .expert_slide.is-nis2 .expert_text,
 .expert_sec .expert_slide.is-nis2 .expert_link { color: var(--swatch--blue-130); }
-
 @media screen and (max-width: 991px) {
   .expert_sec .expert_head { top: 2rem; left: 2rem; }
   .expert_sec .expert_body { right: 2rem; bottom: calc(2.3125rem + 2rem); max-width: 28rem; }
 }
 @media screen and (max-width: 767px) {
-  .expert_sec { padding-top: 4rem; padding-bottom: 4rem; --exp-gap: 0.75rem; }
-  .expert_sec .expert_slide { aspect-ratio: auto; min-height: 34rem; }
+  .expert_sec { --exp-pad: 4rem; --exp-gap: 0.75rem; }
+  .expert_sec .expert_slide { height: auto; min-height: 34rem; }
   .expert_sec .expert_head { top: 1.5rem; left: 1.5rem; right: 1.5rem; }
   .expert_sec .expert_body { left: 1.5rem; right: 1.5rem; bottom: 5rem; }
   .expert_sec .expert_tabs { gap: 0.25rem; }
@@ -51,3 +59,4 @@
   .expert_sec .expert_nav.is-prev { left: calc(50% - var(--exp-sw) / 2 - 1.25rem); }
   .expert_sec .expert_nav.is-next { right: calc(50% - var(--exp-sw) / 2 - 1.25rem); }
 }
+</style>
