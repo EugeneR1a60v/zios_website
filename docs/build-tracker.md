@@ -10,13 +10,13 @@ Paste the Figma frame link (with `node-id`) for each page once its design is fin
 | What we do | | `69aed262702891b6c33f36a8` | | |
 | About us | | `69ca45b3349d87dbe29f8f74` | | |
 | Approach and mission | | `69ce8152e5b958f6d63d838b` | | |
-| Our team | | `69d388eeee3b3d6e7c6d2547` | | |
+| Our team & careers | | `69d388eeee3b3d6e7c6d2547` | In progress | One page (`/our-team`, jobs list at `#jobs`). Hero background `teamhero_bg` swapped 2026-10-26 to the client photo `team-hero-office.webp` (2000×1121, asset `6ae0058fd2aaafe6e768a30a`; old `team-hero-bg.webp` kept). The new photo is much lighter on the right than the old dark-blue one: white text keeps ≥4.5:1 only over the left third and drops under 3:1 past ~55% width, so long heading lines may need a dark gradient overlay (pending decision). |
 | Cases | | `69c52f015c00b1f066a8fc3a` | | |
 | Case detail (CMS) | | `69c5341f2ca975f0f327824c` | | |
 | Leistungsbereiche detail (CMS) | | `69e9ddef2088dcee56f16626` | | |
 | Branchen detail (CMS) | | `69ea24bb0bd206a41968f3f0` | | |
 | Produkte & Plattformen detail (CMS) | | `6a8457d1860d0fc1fba37ff3` | | |
-| Careers | | `69cf83040634e520426f02d9` | | |
+| Careers | | `69cf83040634e520426f02d9` | | Draft page, not published (live /careers is 404); hero has no image, only a background colour. Careers content lives on Our team & careers. |
 | Career detail (CMS) | | `69cf847769fc63d748f21882` | | |
 | Blog | | `69d3b2eb4db186176bc0ed53` | | |
 | News detail (CMS) | | `698db4a1aa9a2b8975b8d2c2` | | |
