@@ -1,9 +1,13 @@
 <style>
-/* About us CTA (Figma 10105:14455), embedded in .aboutcta_sec (versioned: webflow/custom-code/about-cta.css).
-   Brand blue to dark blue diagonal; photo and ASCII layers are Webflow classes under a right-to-left shade.
-   Figma's #145cb9 at 50% and #093a86 have no swatch; mixed from blue-130 / blue-170 (flagged). */
+/* About us CTA (Figma 10377:15221, replaces 10105:14455), embedded in .aboutcta_sec (versioned: webflow/custom-code/about-cta.css).
+   Full-strength team photo (.aboutcta_photo) under a right-to-left shade; the section gradient only shows while the photo loads.
+   Figma's shade ends are #004ac7 at 0% and #002461 at 65%; both map to blue-170 (the transparent end has no visible colour). */
 .aboutcta_sec { background-image: linear-gradient(245.35deg, var(--swatch--blue-100) 14.56%, var(--swatch--blue-170) 90.66%); }
-.aboutcta_shade { background-image: linear-gradient(270deg, color-mix(in srgb, var(--swatch--blue-100) 0%, transparent) 0%, color-mix(in srgb, var(--swatch--blue-130) 50%, transparent) 65.86%, color-mix(in srgb, var(--swatch--blue-170) 60%, var(--swatch--blue-130)) 100%); }
+.aboutcta_shade { background-image: linear-gradient(270deg, color-mix(in srgb, var(--swatch--blue-170) 0%, transparent) 0%, color-mix(in srgb, var(--swatch--blue-170) 65%, transparent) 100%); }
+/* Phones: the copy runs across the whole photo, so darken it evenly enough for white text. */
+@media (max-width: 767px) {
+  .aboutcta_shade { background-image: linear-gradient(180deg, color-mix(in srgb, var(--swatch--blue-170) 75%, transparent) 0%, color-mix(in srgb, var(--swatch--blue-170) 45%, transparent) 100%); }
+}
 .aboutcta_sec :is(h2, p) { text-box: trim-both cap alphabetic; }
 .aboutcta_btn_icon { transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
 .aboutcta_btn:hover .aboutcta_btn_icon { transform: translateX(4px); }

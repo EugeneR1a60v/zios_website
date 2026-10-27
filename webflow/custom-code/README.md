@@ -13,3 +13,4 @@ Name each file after where it lives, e.g. `site-head.html`, `page-home-footer.ht
 ## Shared components
 
 - `news-section.css` → HTML embed inside the **News / Section** component (`u-embed-css`, all pages): card image hover zoom, Medium H3 title, text trim.
+- `about-approach.css` → HTML embed (first child of `.aboutappr_sec`): Trust card lavender gradient (`is-lavender`) and its ASCII opacity.

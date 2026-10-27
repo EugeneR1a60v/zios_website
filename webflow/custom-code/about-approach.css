@@ -1,0 +1,9 @@
+<style>
+/* About us, Approach and Mission: Trust card (Figma 10103:13995, reworked from blue), embedded in .aboutappr_sec
+   (versioned: webflow/custom-code/about-approach.css). The other card fills live in the page head code.
+   Lavender-grey, top to bottom. Figma #8a8fc2 at 10% (over the page ≈ #f0f1f8) and #bfc1d0 have no swatch;
+   mixed from blue-10 / black-5 and black-20 / blue-100 (flagged). Text colour (black-90) is on the is-lavender class. */
+.aboutappr_card.is-lavender { background-image: linear-gradient(180deg, color-mix(in srgb, var(--swatch--blue-10) 50%, var(--swatch--black-5)), color-mix(in srgb, var(--swatch--black-20) 92%, var(--swatch--blue-100))); }
+/* White ASCII on a light card: Figma draws it at full strength (screen), not the 66% the other cards use. */
+.aboutappr_card.is-lavender .aboutappr_ascii { opacity: 1; }
+</style>
